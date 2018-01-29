@@ -1,0 +1,16 @@
+# Temp files
+*~
+.directory
+*.kate-swp
+*.swp
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.bak
+*.old
+*.autosave
+
+/OpenTextEdit.pro.user
+
+/src/translations/*.qm
