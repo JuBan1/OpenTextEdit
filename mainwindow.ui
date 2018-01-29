@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>910</width>
+    <height>562</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="ote::TextEdit" name="plainTextEdit">
+      <property name="backgroundVisible">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>910</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuVisual">
+    <property name="title">
+     <string>Test</string>
+    </property>
+    <addaction name="actionSelect_Light_Theme"/>
+    <addaction name="actionSelect_Dark_Theme"/>
+    <addaction name="actionShow_Whitespace"/>
+    <addaction name="actionShow_Linebreaks"/>
+    <addaction name="actionEnable_Smart_Indent"/>
+    <addaction name="actionEnable_Line_Wrap"/>
+    <addaction name="actionAuto_convert_tab_to_spaces"/>
+   </widget>
+   <widget class="QMenu" name="menuZoom">
+    <property name="title">
+     <string>&amp;Zoom</string>
+    </property>
+    <addaction name="actionReset_Zoom"/>
+    <addaction name="actionZoom_In"/>
+    <addaction name="actionZoom_Out"/>
+   </widget>
+   <widget class="QMenu" name="menuModification">
+    <property name="title">
+     <string>&amp;Modification</string>
+    </property>
+    <addaction name="actionSet_Document_Unmodified"/>
+   </widget>
+   <addaction name="menuVisual"/>
+   <addaction name="menuZoom"/>
+   <addaction name="menuModification"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionSelect_Light_Theme">
+   <property name="text">
+    <string>&amp;Select Light Theme</string>
+   </property>
+  </action>
+  <action name="actionSelect_Dark_Theme">
+   <property name="text">
+    <string>Select &amp;Dark Theme</string>
+   </property>
+  </action>
+  <action name="actionShow_Whitespace">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show &amp;Whitespace</string>
+   </property>
+  </action>
+  <action name="actionShow_Linebreaks">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show &amp;Linebreaks</string>
+   </property>
+  </action>
+  <action name="actionEnable_Smart_Indent">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Enable Smart Indent</string>
+   </property>
+  </action>
+  <action name="actionEnable_Line_Wrap">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>E&amp;nable Line Wrap</string>
+   </property>
+  </action>
+  <action name="actionAuto_convert_tab_to_spaces">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Auto-Convert Tab To Space</string>
+   </property>
+  </action>
+  <action name="actionReset_Zoom">
+   <property name="text">
+    <string>&amp;Reset Zoom</string>
+   </property>
+  </action>
+  <action name="actionZoom_In">
+   <property name="text">
+    <string>&amp;Zoom In</string>
+   </property>
+  </action>
+  <action name="actionZoom_Out">
+   <property name="text">
+    <string>Zoom &amp;Out</string>
+   </property>
+  </action>
+  <action name="actionSet_Document_Unmodified">
+   <property name="text">
+    <string>Set Document Unmodified</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>ote::TextEdit</class>
+   <extends>QPlainTextEdit</extends>
+   <header>ote/textedit.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
