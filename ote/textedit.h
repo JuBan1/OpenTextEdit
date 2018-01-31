@@ -89,7 +89,7 @@ public:
 	void deleteSelectedBlocks();
 
 	void convertLeadingWhitespaceToTabs();
-	void convertLeadingWhitespaceToSpace();
+	void convertLeadingWhitespaceToSpaces();
 
 signals:
 	void cursorPositionChanged();

@@ -431,7 +431,7 @@ void TextEdit::convertLeadingWhitespaceToTabs()
 	c.insertText(final);
 }
 
-void TextEdit::convertLeadingWhitespaceToSpace()
+void TextEdit::convertLeadingWhitespaceToSpaces()
 {
 	auto lines = toPlainText().split('\n');
 	QString final;
