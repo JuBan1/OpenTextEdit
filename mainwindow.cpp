@@ -171,5 +171,5 @@ void MainWindow::on_actionLeading_WS_to_Tabs_triggered()
 
 void MainWindow::on_actionLeading_WS_to_Spaces_triggered()
 {
-	ui->plainTextEdit->convertLeadingWhitespaceToSpaces();
+	ui->plainTextEdit->trimWhitespace(true, true);
 }

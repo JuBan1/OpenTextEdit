@@ -457,6 +457,33 @@ void TextEdit::convertLeadingWhitespaceToSpaces()
 	c.insertText(final);
 }
 
+void TextEdit::trimWhitespace(bool leading, bool trailing)
+{
+	if(!leading && !trailing)
+		return;
+
+	auto lines = toPlainText().split('\n');
+	QString final;
+
+	QRegularExpression regex = QRegularExpression("\\S");
+
+	for(auto& line : lines) {
+		int start = leading ? line.indexOf(regex) : 0;
+		int end = trailing ? line.lastIndexOf(regex) : -1;
+
+		line = line.mid(start, end-start+1);
+		final += line + '\n';
+	}
+
+	if(!final.isEmpty())
+		final.chop(1); // Remove last '\n' since it creates an extra line at the end
+
+	auto c = textCursor();
+	c.select(QTextCursor::Document);
+
+	c.insertText(final);
+}
+
 void TextEdit::updateSidebarGeometry()
 {
 	auto gutterWidth = m_sideBar->sizeHint().width();

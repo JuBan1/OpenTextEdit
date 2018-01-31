@@ -88,8 +88,10 @@ public:
 	void duplicateSelectedBlocks();
 	void deleteSelectedBlocks();
 
+	// Whitespace management
 	void convertLeadingWhitespaceToTabs();
 	void convertLeadingWhitespaceToSpaces();
+	void trimWhitespace(bool leading, bool trailing);
 
 signals:
 	void cursorPositionChanged();
