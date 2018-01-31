@@ -7,7 +7,8 @@
 #include "bracketmatchercomponent.h"
 #include "syntaxhighlightercomponent.h"
 
-#include "ote/Theming/theme.h"
+#include "ote/Themes/theme.h"
+#include "ote/Syntax/syntaxdefinition.h"
 
 class QString;
 class QTextDocument;
@@ -31,6 +32,9 @@ public:
 	void setFormat(int start, int count, const QColor &color);
 	void setFormat(int start, int count, const QFont &font);
 
+	void setSyntaxDefinition(SyntaxDefinition d);
+	SyntaxDefinition getSyntaxDefinition() const { return m_definition; }
+
 	void setTheme(Theme t);
 	Theme getTheme() const { return m_theme; }
 
@@ -42,6 +46,7 @@ public:
 	friend class HighlighterComponent;
 
 	Theme m_theme;
+	SyntaxDefinition m_definition;
 
 	BracketMatcherComponent* m_bracketMatcher = new BracketMatcherComponent(this);
 	SyntaxHighlighterComponent* m_syntaxHighlighter = new SyntaxHighlighterComponent(this);

@@ -44,6 +44,14 @@ void CompositeHighlighter::setFormat(int start, int count, const QFont& font)
 	QSyntaxHighlighter::setFormat(start, count, font);
 }
 
+void CompositeHighlighter::setSyntaxDefinition(SyntaxDefinition d)
+{
+	m_definition = d;
+
+	m_syntaxHighlighter->setup();
+	m_bracketMatcher->setup();
+}
+
 void CompositeHighlighter::setTheme(Theme t)
 {
 	m_theme = t;

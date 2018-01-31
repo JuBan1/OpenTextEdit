@@ -6,8 +6,8 @@
 
 #include <QLabel>
 
-#include "ote/Theming/themedata.h"
-#include "ote/Theming/themedatabase.h"
+#include "ote/Themes/themedatabase.h"
+#include "ote/Syntax/syntaxdefinitiondatabase.h"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -17,56 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	ui->setupUi(this);
 
+	/*
 	auto p = qApp->palette();
-
-	ThemeData* td = new ThemeData("dark");
-
-	td->set(Theme::TextEditText, QColor(0x50fa7b));
-	td->set(Theme::TextEditActiveText, QColor(0xf8f8f2));
-	td->set(Theme::TextEditBackground, QColor(0x282a36));
-	td->set(Theme::TextEditActiveBackground, QColor(255,255,255,25));
-
-	td->set(Theme::GutterText, QColor(0x6D8A88));
-	td->set(Theme::GutterActiveText, QColor(255,255,255));
-	td->set(Theme::GutterBackground, QColor(0x282a36));
-	td->set(Theme::GutterActiveBackground, QColor(50,50,50));
-
-	td->set(Theme::SyntaxComment, QColor(0x6272a4));
-	td->set(Theme::SyntaxString, QColor(0xf1fa8c));
-	td->set(Theme::SyntaxNumber, QColor(0xbd93f9));
-	td->set(Theme::SyntaxConstant, QColor(0xbd93f9));
-	td->set(Theme::SyntaxType, QColor(0xffb86c));
-	td->set(Theme::SyntaxKeyword, QColor(0xff79c6));
-	td->set(Theme::SyntaxSymbol, QColor(0xffffff));
-
-	QTextCharFormat mbFormat;
-	mbFormat.setBackground( QColor(255,255,255,25) );
-	mbFormat.setUnderlineStyle(QTextCharFormat::SingleUnderline);
-	td->set(Theme::SyntaxMatchingBracket, mbFormat);
-
-	td->set(Theme::SyntaxOperator, QColor(0xff79c6));
-	td->set(Theme::SearchHighlight, QColor(100,255,100, 50));
-
-	ThemeDatabase::addTheme(td);
-
-
-
-
-	ThemeData* t2 = new ThemeData("light");
-	t2->set(Theme::TextEditActiveBackground, QColor(50,50,50,30));
-	t2->set(Theme::GutterBackground, QColor(80,80,100));
-	t2->set(Theme::GutterActiveBackground, QColor(120,90,120));
-	t2->set(Theme::GutterActiveText, QColor(255,255,255));
-	t2->set(Theme::GutterText, QColor(205,205,205));
-	t2->set(Theme::SearchHighlight, QColor(100,100,255));
-
-	t2->set(Theme::TextEditBackground, QColor(205,205,205));
-	t2->set(Theme::TextEditText, QColor(0,0,0));
-	t2->set(Theme::TextEditActiveText, QColor(150,190,185));
-	ThemeDatabase::addTheme(t2);
-
-
-
 	ThemeData* t3 = new ThemeData("");
 	t3->set(Theme::TextEditActiveBackground, p.highlight().color());
 	t3->set(Theme::GutterBackground, p.base().color());
@@ -78,20 +30,33 @@ MainWindow::MainWindow(QWidget *parent) :
 	t3->set(Theme::TextEditText, p.text().color());
 	t3->set(Theme::TextEditActiveText, p.highlightedText().color());
 	ThemeDatabase::addTheme(t3);
+	*/
 
 
-	ui->plainTextEdit->setTheme(Theme("dark"));
+	ote::ThemeDatabase::loadFromFile("/home/s3rius/dev/qt/OpenTextEdit/themes/dracula.json");
+	ote::SyntaxDefinitionDatabase::loadFromFile("/home/s3rius/dev/qt/OpenTextEdit/syntax/c++.json");
+
+
+	ui->plainTextEdit->setTheme(Theme("dracula"));
+	ui->plainTextEdit->setSyntaxDefnition(SyntaxDefinition("C++"));
 
 
 	QLabel* l = new QLabel("Document unmodified");
 
-	connect(ui->plainTextEdit, &ote::TextEdit::modificationChanged, [l](bool modified){
+	connect(ui->plainTextEdit, &ote::TextEdit::modificationChanged, [l, this](bool modified){
 		modified ?
 					l->setText("Document modified") :
 					l->setText("Document unmodified");
+
+			qDebug() << ui->plainTextEdit->getScrollPosition();
 	});
 
 	ui->statusBar->addWidget(l);
+
+
+	QTimer* t = new QTimer();
+	t->setInterval(1000);
+	t->setSingleShot(false);
 
 
 	QFile f("/home/s3rius/dev/src/ktexteditor/src/syntax/katehighlight.cpp");
@@ -102,7 +67,15 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->plainTextEdit->setPlainText(b);
 	//ui->plainTextEdit->setTextCursor( ui->plainTextEdit->cursorForPosition(QPoint(0,0)) );
 
-	ui->plainTextEdit->setCursorPosition(20, 30);
+
+	ui->plainTextEdit->startFind("bool", QTextDocument::FindFlags(), 1000, 2500);
+	connect(t, &QTimer::timeout, [this](){
+		ui->plainTextEdit->findNext();
+	});
+	//t->start();
+
+
+	ui->plainTextEdit->setCursorPosition(2000, 2);
 }
 
 MainWindow::~MainWindow()
@@ -117,7 +90,7 @@ void MainWindow::on_actionSelect_Light_Theme_triggered()
 
 void MainWindow::on_actionSelect_Dark_Theme_triggered()
 {
-	ui->plainTextEdit->setTheme( ote::ThemeDatabase::getTheme("dark") );
+	ui->plainTextEdit->setTheme( ote::ThemeDatabase::getTheme("dracula") );
 }
 
 void MainWindow::on_actionShow_Whitespace_toggled(bool arg1)
@@ -163,4 +136,40 @@ void MainWindow::on_actionZoom_Out_triggered()
 void MainWindow::on_actionSet_Document_Unmodified_triggered()
 {
 	ui->plainTextEdit->document()->setModified(false);
+}
+
+void MainWindow::on_actionReload_Theme_Files_triggered()
+{
+	ote::ThemeDatabase::loadFromFile("/home/s3rius/dev/qt/OpenTextEdit/themes/dracula.json");
+	ui->plainTextEdit->setTheme(ui->plainTextEdit->getTheme());
+}
+
+void MainWindow::on_actionMove_Selection_Up_triggered()
+{
+	ui->plainTextEdit->moveSelectedBlocksUp();
+}
+
+void MainWindow::on_actionMove_Selection_Down_triggered()
+{
+	ui->plainTextEdit->moveSelectedBlocksDown();
+}
+
+void MainWindow::on_actionDelete_Selected_Blocks_triggered()
+{
+	ui->plainTextEdit->deleteSelectedBlocks();
+}
+
+void MainWindow::on_actionDuplicate_Selected_Blocks_triggered()
+{
+	ui->plainTextEdit->duplicateSelectedBlocks();
+}
+
+void MainWindow::on_actionLeading_WS_to_Tabs_triggered()
+{
+	ui->plainTextEdit->convertLeadingWhitespaceToTabs();
+}
+
+void MainWindow::on_actionLeading_WS_to_Spaces_triggered()
+{
+	ui->plainTextEdit->convertLeadingWhitespaceToSpace();
 }

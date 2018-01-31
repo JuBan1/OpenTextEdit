@@ -38,6 +38,20 @@ private slots:
 
 	void on_actionSet_Document_Unmodified_triggered();
 
+	void on_actionReload_Theme_Files_triggered();
+
+	void on_actionMove_Selection_Up_triggered();
+
+	void on_actionMove_Selection_Down_triggered();
+
+	void on_actionDelete_Selected_Blocks_triggered();
+
+	void on_actionDuplicate_Selected_Blocks_triggered();
+
+	void on_actionLeading_WS_to_Tabs_triggered();
+
+	void on_actionLeading_WS_to_Spaces_triggered();
+
 private:
 	Ui::MainWindow *ui;
 };

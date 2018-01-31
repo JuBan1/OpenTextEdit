@@ -4,7 +4,7 @@
 
 #include "compositehighlighter.h"
 
-#include "ote/Theming/theme.h"
+#include "ote/Themes/theme.h"
 
 namespace ote {
 
@@ -16,64 +16,24 @@ SyntaxHighlighterComponent::SyntaxHighlighterComponent(CompositeHighlighter* h)
 
 void SyntaxHighlighterComponent::setup()
 {
+	auto d = m_highlighter->getSyntaxDefinition();
 	Theme t = m_highlighter->getTheme();
 
-	HighlightingRule rule;
 	highlightingRules.clear();
 
-	QStringList keywordPatterns;
-	keywordPatterns << "class" << "const" << "enum" << "explicit" << "friend" << "inline"
-					<< "namespace" << "operator" << "private" << "protected" << "public"
-					<< "signals" << "slots" << "static" << "struct" << "template"
-					<< "typedef" << "typename" << "union" << "virtual" << "volatile"
-					<< "return" << "case" << "switch" << "while";
 
-	wordRules.append( {keywordPatterns, t.getFormat(Theme::SyntaxKeyword)} );
+	for(const auto& l : d.getKeywordGroups()){
+		wordRules.append( {l.words, t.getFormat(l.type)} );
+	}
 
-	QStringList typePatterns;
-	typePatterns << "char" << "double" << "int" << "long" << "short" << "signed"
-				 << "unsigned" << "void" << "bool";
-
-	wordRules.append( {typePatterns, t.getFormat(Theme::SyntaxType)} );
-
-
-	QStringList defPatterns;
-	defPatterns << "false" << "true" << "null";
-	wordRules.append( {defPatterns, t.getFormat(Theme::SyntaxConstant)} );
-
-
-	// Misc symbols
-	rule.pattern = QRegularExpression("\\(|\\)|\\{|\\}|\\[|\\]|,|;|=|\\+|\\-|\\.|\\:");
-	rule.format = t.getFormat(Theme::SyntaxSymbol);
-	highlightingRules.append(rule);
-
-	// Operators
-	rule.pattern = QRegularExpression("\\&|\\=|\\!|<|>|\\*|-|\\+|\\.\\?|\\%");
-	rule.format = t.getFormat(Theme::SyntaxOperator);
-	highlightingRules.append(rule);
-
-	// Numbers
-	rule.pattern = QRegularExpression("\\W(\\d+\\w*)");
-	rule.format = t.getFormat(Theme::SyntaxNumber);
-	rule.captureGroup = 1;
-	highlightingRules.append(rule);
-
-	// Double-quote string
-	rule.pattern = QRegularExpression("\"(?:[^\"\\\\]|\\\\.)*\"");
-	rule.format = t.getFormat(Theme::SyntaxString);
-	rule.captureGroup = 0;
-	highlightingRules.append(rule);
-
-	// Single-quote string
-	rule.pattern = QRegularExpression("'(?:[^'\\\\]|\\\\.)*'");
-	rule.format = t.getFormat((Theme::SyntaxString));
-	rule.captureGroup = 0;
-	highlightingRules.append(rule);
+	for(const auto& l : d.getRegexGroups()){
+		highlightingRules.append( {l.pattern, t.getFormat(l.type), l.captureGroup} );
+	}
 
 	// Single-line comments
-	rule.pattern = QRegularExpression("//[^\n]*");
+	/*rule.pattern = QRegularExpression("//[^\n]*");
 	rule.format = t.getFormat(Theme::SyntaxComment);
-	highlightingRules.append(rule);
+	highlightingRules.append(rule);*/
 
 	// Multi-line comments
 	multiLineCommentFormat = t.getFormat(Theme::SyntaxComment);

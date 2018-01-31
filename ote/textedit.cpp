@@ -7,11 +7,12 @@
 #include <QPainter>
 #include <QPalette>
 #include <QScrollBar>
+#include <QMenu>
 
+#include <algorithm>
 #include <cmath>
 
 #include "texteditgutter.h"
-#include <QStyle>
 
 #include "Highlighting/bracketmatchercomponent.h"
 
@@ -49,8 +50,6 @@ TextEdit::TextEdit(QWidget* parent)
 	connect(this, &QPlainTextEdit::cursorPositionChanged, this, &TextEdit::cursorPositionChanged);
 	connect(this, &QPlainTextEdit::selectionChanged, this, &TextEdit::onSelectionChanged);
 
-	//connect(document(), &QTextDocument::contentsChanged, this, &TextEdit::contentsChanged);
-
 	setWordWrap(false);
 
 	m_highlighter = new CompositeHighlighter();
@@ -76,6 +75,14 @@ void TextEdit::setTheme(Theme t) {
 	m_highlighter->rehighlight();
 	onCursorPositionChanged();
 	onSelectionChanged();
+}
+
+void TextEdit::setSyntaxDefnition(SyntaxDefinition d)
+{
+	m_currentSyntaxDefinition = d;
+
+	m_highlighter->setSyntaxDefinition(d);
+	m_highlighter->rehighlight();
 }
 
 void TextEdit::setShowWhitespace(bool show)
@@ -132,6 +139,16 @@ void TextEdit::setFont(QFont font)
 	setTabWidth(m_tabWidth);
 }
 
+bool TextEdit::isTabToSpaces() const
+{
+	return m_tabToSpaces;
+}
+
+int TextEdit::getTabWidth() const
+{
+	return m_tabWidth;
+}
+
 QString TextEdit::getCurrentWord() const
 {
 	auto c = textCursor();
@@ -146,9 +163,104 @@ int TextEdit::getLineCount() const
 
 void TextEdit::setCursorPosition(int line, int column)
 {
-	QTextCursor c(document()->findBlockByLineNumber(line));
-	c.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, column);
+	const auto& block = document()->findBlockByLineNumber(line);
+	setAbsoluteCursorPosition( block.position() + std::min(column, block.length()-1) );
+}
+
+void TextEdit::setCursorPosition(const TextEdit::CursorPos& pos)
+{
+	setCursorPosition(pos.line, pos.column);
+}
+
+TextEdit::CursorPos TextEdit::getCursorPosition() const
+{
+	const auto& c = textCursor();
+	return { c.blockNumber(), c.positionInBlock() };
+}
+
+void TextEdit::setAbsoluteCursorPosition(int pos)
+{
+	auto c = textCursor();
+	c.setPosition(pos);
 	setTextCursor(c);
+}
+
+int TextEdit::getAbsoluteCursorPosition() const
+{
+	return textCursor().position();
+}
+
+QPoint TextEdit::getScrollPosition() const
+{
+	return { horizontalScrollBar()->sliderPosition(), verticalScrollBar()->sliderPosition() };
+}
+
+void TextEdit::setScrollPosition(const QPoint& p)
+{
+	horizontalScrollBar()->setSliderPosition(p.x());
+	verticalScrollBar()->setSliderPosition(p.y());
+}
+
+void TextEdit::startFind(QString term, QTextDocument::FindFlags flags, int from, int to)
+{
+	if(to==-1)
+		to = document()->characterCount()-1;
+
+	m_findRange = {from, to};
+
+	m_findTerm = term;
+	m_findFlags = flags;
+	m_findActive = true;
+
+	/*auto c = textCursor();
+	c.setPosition(from);
+	c.setPosition(to, QTextCursor::KeepAnchor);
+
+	QTextEdit::ExtraSelection selection;
+	selection.format.setBackground(m_currentTheme.getColor(Theme::TextEditActiveBackground));
+	selection.cursor = c;
+
+	m_extraSelections[ESSearchRange] = ExtraSelectionList() << selection;*/
+}
+
+TextEdit::Selection TextEdit::findNext()
+{
+	auto curr = textCursor();
+	const auto startPos = m_findRange.first;
+	const auto endPos = m_findRange.second;
+
+	if(curr.position() < startPos)
+		curr.setPosition(startPos);
+	else if(curr.position() > endPos)
+		curr.setPosition(endPos);
+
+	auto c = document()->find(m_findTerm, textCursor(), m_findFlags);
+
+	if(c.selectionEnd() > endPos)
+		c = document()->find(m_findTerm, startPos, m_findFlags);
+	else if(c.selectionStart() < startPos)
+		c = document()->find(m_findTerm, endPos, m_findFlags);
+
+	if(c.selectionEnd() <= endPos && c.selectionStart() >= startPos)
+		setTextCursor(c);
+
+	qDebug() << c.blockNumber() << c.positionInBlock();
+
+	return {};
+}
+
+void TextEdit::setFindFlags(QTextDocument::FindFlags)
+{
+}
+
+QTextDocument::FindFlags TextEdit::getFindFlags() const
+{
+	return m_findFlags;
+}
+
+void TextEdit::endFind()
+{
+	m_findActive = false;
 }
 
 void TextEdit::resetZoom()
@@ -183,6 +295,166 @@ void TextEdit::zoomOut()
 int TextEdit::getZoomLevel() const
 {
 	return m_pointZoom;
+}
+
+int TextEdit::getModificationRevision() const
+{
+	return document()->revision();
+}
+
+bool TextEdit::isModified() const
+{
+	return document()->isModified();
+}
+
+void TextEdit::setModified(bool modified)
+{
+	document()->setModified(modified);
+}
+
+void TextEdit::moveSelectedBlocksUp()
+{
+	auto c = textCursor();
+
+	bool success;
+	c.setPosition(c.selectionStart()); //Remove selection
+	success =  c.movePosition(QTextCursor::PreviousBlock);
+	success &= c.movePosition(QTextCursor::NextBlock, QTextCursor::KeepAnchor);
+
+	if(!success)
+		return;
+
+	c.beginEditBlock();
+	auto text = c.selectedText();
+	c.removeSelectedText();
+
+	c = textCursor();
+	c.setPosition(c.selectionEnd());
+	c.movePosition(QTextCursor::NextBlock);
+	c.insertText(text);
+
+	c.endEditBlock();
+}
+
+void TextEdit::moveSelectedBlocksDown()
+{
+	auto c = textCursor();
+
+	bool success;
+	c.setPosition(c.selectionEnd()); //Remove selection
+	success =  c.movePosition(QTextCursor::NextBlock);
+	success &= c.movePosition(QTextCursor::NextBlock, QTextCursor::KeepAnchor);
+
+	if(!success)
+		return;
+
+	c.beginEditBlock();
+	auto text = c.selectedText();
+	c.removeSelectedText();
+
+	c = textCursor();
+	c.setPosition(c.selectionStart());
+	c.movePosition(QTextCursor::StartOfBlock);
+	c.insertText(text);
+
+	c.endEditBlock();
+}
+
+void TextEdit::duplicateSelectedBlocks()
+{
+	auto c = textCursor();
+	auto blockCursor = c;
+
+	bool success;
+	blockCursor.setPosition(c.selectionStart());
+	success = blockCursor.movePosition(QTextCursor::StartOfBlock);
+	blockCursor.setPosition(c.selectionEnd(), QTextCursor::KeepAnchor);
+	success &= blockCursor.movePosition(QTextCursor::NextBlock, QTextCursor::KeepAnchor);
+
+	if(!success)
+		return;
+
+	c.beginEditBlock();
+	auto text = blockCursor.selectedText();
+
+	c = textCursor();
+	c.setPosition(c.selectionStart());
+	c.movePosition(QTextCursor::StartOfBlock);
+	c.insertText(text);
+
+	c.endEditBlock();
+}
+
+void TextEdit::deleteSelectedBlocks()
+{
+	auto c = textCursor();
+	auto ce = c;
+
+	ce.setPosition(c.selectionStart());
+	ce.movePosition(QTextCursor::StartOfBlock);
+	ce.setPosition(c.selectionEnd(), QTextCursor::KeepAnchor);
+	ce.movePosition(QTextCursor::NextBlock, QTextCursor::KeepAnchor);
+	ce.removeSelectedText();
+}
+
+void TextEdit::convertLeadingWhitespaceToTabs()
+{
+	auto lines = toPlainText().split('\n');
+	QString final;
+
+	QRegularExpression regex = QRegularExpression("\\S");
+
+	for(auto& line : lines) {
+		auto firstNonWS = line.indexOf(regex);
+		auto ws = 0;
+		for(int i=0; i<firstNonWS; ++i)
+			ws += (line[i]=='\t' ? m_tabWidth : 1);
+
+		QString newBegin;
+		while(ws>=4) {
+			newBegin += '\t';
+			ws -= 4;
+		}
+		while(ws-->0)
+			newBegin += ' ';
+
+		line = newBegin + line.mid(firstNonWS);
+		final += line + '\n';
+	}
+
+	if(!final.isEmpty())
+		final.chop(1); // Remove last '\n' since it creates an extra line at the end
+
+	auto c = textCursor();
+	c.select(QTextCursor::Document);
+
+	c.insertText(final);
+}
+
+void TextEdit::convertLeadingWhitespaceToSpace()
+{
+	auto lines = toPlainText().split('\n');
+	QString final;
+
+	QRegularExpression regex = QRegularExpression("\\S");
+
+	for(auto& line : lines) {
+		auto firstNonWS = line.indexOf(regex);
+		auto ws = 0;
+		for(int i=0; i<firstNonWS; ++i)
+			ws += (line[i]=='\t' ? m_tabWidth : 1);
+
+		line = QString(ws, ' ') + line.mid(firstNonWS);
+		final += line + '\n';
+	}
+
+	if(!final.isEmpty())
+		final.chop(1); // Remove last '\n' since it creates an extra line at the end
+
+	auto c = textCursor();
+	c.select(QTextCursor::Document);
+
+	c.insertText(final);
 }
 
 void TextEdit::updateSidebarGeometry()
@@ -310,6 +582,14 @@ void TextEdit::focusInEvent(QFocusEvent* event)
 	QPlainTextEdit::focusInEvent(event);
 }
 
+void TextEdit::contextMenuEvent(QContextMenuEvent *event)
+{
+	QPlainTextEdit::contextMenuEvent(event);
+	/*auto menu = createStandardContextMenu(event->pos());
+	menu->exec(event->globalPos());
+	delete menu;*/
+}
+
 
 void TextEdit::paintLineBreaks(QPainter &painter, const BlockList& blockList) const
 {
@@ -346,6 +626,136 @@ void TextEdit::paintLineBreaks(QPainter &painter, const BlockList& blockList) co
 	painter.restore();
 }
 
+void TextEdit::paintSearchBlock(QPainter& painter, const QRect& eventRect, const QTextBlock& block)
+{
+return;
+	QTextLayout *layout = block.layout();
+	QString text = block.text();
+
+	QTextLine line = layout->lineForTextPosition(0);
+
+	QRectF rr = line.naturalTextRect();
+	QRectF r = blockBoundingGeometry(block).translated(contentOffset());
+
+	rr.moveTop(rr.top() + r.top());
+
+	painter.fillRect(rr, QColor("#5000FF00"));
+
+	QColor lineCol = QColor("red");
+	QPen pen = painter.pen();
+	painter.setPen(lineCol);
+	//if (block == d->m_findScopeStart.block())
+		painter.drawLine(rr.topLeft(), rr.topRight());
+	//if (block == d->m_findScopeEnd.block())
+		painter.drawLine(rr.bottomLeft(), rr.bottomRight());
+	painter.drawLine(rr.topLeft(), rr.bottomLeft());
+	painter.drawLine(rr.topRight(), rr.bottomRight());
+	painter.setPen(pen);
+
+
+
+	/*qreal spacew = QFontMetricsF(font()).width(QLatin1Char(' '));
+
+	int offset = 0;
+	int relativePos  =  ts.positionAtColumn(text,
+											d->m_findScopeVerticalBlockSelectionFirstColumn,
+											&offset);
+
+	qreal x = line.cursorToX(relativePos) + offset * spacew;
+
+	int eoffset = 0;
+	int erelativePos  =  ts.positionAtColumn(text,
+											 d->m_findScopeVerticalBlockSelectionLastColumn,
+											 &eoffset);
+	QTextLine eline = layout->lineForTextPosition(erelativePos);
+	qreal ex = eline.cursorToX(erelativePos) + eoffset * spacew;
+
+
+	rr.moveTop(rr.top() + r.top());
+	rr.setLeft(r.left() + x);
+	if (line.lineNumber() == eline.lineNumber())
+		rr.setRight(r.left() + ex);
+
+
+	QColor lineCol = QColor("red");
+	QPen pen = painter.pen();
+	painter.setPen(lineCol);
+	if (blockFS == d->m_findScopeStart.block())
+		painter.drawLine(rr.topLeft(), rr.topRight());
+	if (blockFS == d->m_findScopeEnd.block())
+		painter.drawLine(rr.bottomLeft(), rr.bottomRight());
+	painter.drawLine(rr.topLeft(), rr.bottomLeft());
+	painter.drawLine(rr.topRight(), rr.bottomRight());
+	painter.setPen(pen);
+*/
+
+
+/*	auto er = eventRect;
+
+	if (!m_findActive) {
+		QTextBlock blockFS = block;
+		QPointF offsetFS = contentOffset();
+		while (blockFS.isValid()) {
+
+			QRectF r = blockBoundingRect(blockFS).translated(offsetFS);
+
+			if (r.bottom() >= er.top() && r.top() <= er.bottom()) {
+
+				if (blockFS.position() >= d->m_findScopeStart.block().position()
+						&& blockFS.position() <= d->m_findScopeEnd.block().position()) {
+					QTextLayout *layout = blockFS.layout();
+					QString text = blockFS.text();
+					const TabSettings &ts = d->m_document->tabSettings();
+					qreal spacew = QFontMetricsF(font()).width(QLatin1Char(' '));
+
+					int offset = 0;
+					int relativePos  =  ts.positionAtColumn(text,
+															d->m_findScopeVerticalBlockSelectionFirstColumn,
+															&offset);
+					QTextLine line = layout->lineForTextPosition(relativePos);
+					qreal x = line.cursorToX(relativePos) + offset * spacew;
+
+					int eoffset = 0;
+					int erelativePos  =  ts.positionAtColumn(text,
+															 d->m_findScopeVerticalBlockSelectionLastColumn,
+															 &eoffset);
+					QTextLine eline = layout->lineForTextPosition(erelativePos);
+					qreal ex = eline.cursorToX(erelativePos) + eoffset * spacew;
+
+					QRectF rr = line.naturalTextRect();
+					rr.moveTop(rr.top() + r.top());
+					rr.setLeft(r.left() + x);
+					if (line.lineNumber() == eline.lineNumber())
+						rr.setRight(r.left() + ex);
+					painter.fillRect(rr, QColor("yellow"));
+
+					QColor lineCol = QColor("red");
+					QPen pen = painter.pen();
+					painter.setPen(lineCol);
+					if (blockFS == d->m_findScopeStart.block())
+						painter.drawLine(rr.topLeft(), rr.topRight());
+					if (blockFS == d->m_findScopeEnd.block())
+						painter.drawLine(rr.bottomLeft(), rr.bottomRight());
+					painter.drawLine(rr.topLeft(), rr.bottomLeft());
+					painter.drawLine(rr.topRight(), rr.bottomRight());
+					painter.setPen(pen);
+				}
+			}
+			offsetFS.ry() += r.height();
+
+			if (offsetFS.y() > viewport()->rect().height())
+				break;
+
+			blockFS = blockFS.next();
+			if (!blockFS.isVisible()) {
+				// invisible blocks do have zero line count
+				blockFS = document()->findBlockByLineNumber(blockFS.firstLineNumber());
+			}
+
+		}
+	}*/
+}
+
 void TextEdit::compositeExtraSelections()
 {
 	ExtraSelectionList fullList;
@@ -354,6 +764,7 @@ void TextEdit::compositeExtraSelections()
 		fullList << list;
 
 	setExtraSelections(fullList);
+	//setExtraSelections( m_extraSelections[ESSearchRange] );
 }
 
 static void fillBackground(QPainter *p, const QRectF &rect, QBrush brush, const QRectF &gradientRect = QRectF())
@@ -376,6 +787,7 @@ static void fillBackground(QPainter *p, const QRectF &rect, QBrush brush, const 
 void TextEdit::paintEvent(QPaintEvent* e)
 {
 	compositeExtraSelections();
+
 
 	// What follows is a copy of QPlainTextEdit::paintEvent with some modifications to allow different line-highlighting.
 	QPainter painter(viewport());
@@ -400,8 +812,21 @@ void TextEdit::paintEvent(QPaintEvent* e)
 	er.setRight(qMin(er.right(), maxX));
 	painter.setClipRect(er);
 
-
 	QAbstractTextDocumentLayout::PaintContext context = getPaintContext();
+
+	/*int from = m_findRange.first;
+	int to = m_findRange.second;
+	auto c = textCursor();
+	c.setPosition(from);
+	//c.setPosition(to, QTextCursor::KeepAnchor);
+	c.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 10);
+
+	QAbstractTextDocumentLayout::Selection selection;
+	selection.cursor = c;
+
+	selection.format.setBackground(m_currentTheme.getColor(Theme::SearchHighlight));
+	context.selections.push_front(selection);*/
+
 
 	while (block.isValid()) {
 
@@ -428,6 +853,7 @@ void TextEdit::paintEvent(QPaintEvent* e)
 			// Drop the last Selection if the user has selected text. This way we prevent Qt painting all
 			// selected text white. We have to add our own Selection to still have proper selection highlighting.
 			if(context.selections.size() > 0 && textCursor().hasSelection()) {
+
 				context.selections.pop_back();
 
 				QAbstractTextDocumentLayout::Selection selection;
@@ -468,6 +894,8 @@ void TextEdit::paintEvent(QPaintEvent* e)
 				}
 			}
 
+
+
 			bool drawCursor = ((editable || (textInteractionFlags() & Qt::TextSelectableByKeyboard))
 							   && context.cursorPosition >= blpos
 							   && context.cursorPosition < blpos + bllen);
@@ -486,7 +914,6 @@ void TextEdit::paintEvent(QPaintEvent* e)
 					selections.append(o);
 				}
 			}
-
 
 			if (!placeholderText().isEmpty() && document()->isEmpty() && layout->preeditAreaText().isEmpty()) {
 				QColor col = palette().text().color();
@@ -508,6 +935,8 @@ void TextEdit::paintEvent(QPaintEvent* e)
 				layout->drawCursor(&painter, offset, cpos, cursorWidth());
 			}
 		}
+
+		paintSearchBlock(painter, e->rect(), block);
 
 		offset.ry() += r.height();
 		if (offset.y() > viewportRect.height())

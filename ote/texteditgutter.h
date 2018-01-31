@@ -2,7 +2,7 @@
 #define TEXTEDITGUTTER_H
 
 #include <QPlainTextEdit>
-#include "Theming/theme.h"
+#include "Themes/theme.h"
 #include "textedit.h"
 
 namespace ote {

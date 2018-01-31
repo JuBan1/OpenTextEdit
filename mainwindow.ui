@@ -37,8 +37,6 @@
     <property name="title">
      <string>Test</string>
     </property>
-    <addaction name="actionSelect_Light_Theme"/>
-    <addaction name="actionSelect_Dark_Theme"/>
     <addaction name="actionShow_Whitespace"/>
     <addaction name="actionShow_Linebreaks"/>
     <addaction name="actionEnable_Smart_Indent"/>
@@ -59,9 +57,36 @@
     </property>
     <addaction name="actionSet_Document_Unmodified"/>
    </widget>
+   <widget class="QMenu" name="menuTheming">
+    <property name="title">
+     <string>Themi&amp;ng</string>
+    </property>
+    <addaction name="actionSelect_Light_Theme"/>
+    <addaction name="actionSelect_Dark_Theme"/>
+    <addaction name="actionReload_Theme_Files"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionMove_Selection_Up"/>
+    <addaction name="actionMove_Selection_Down"/>
+    <addaction name="actionDelete_Selected_Blocks"/>
+    <addaction name="actionDuplicate_Selected_Blocks"/>
+   </widget>
+   <widget class="QMenu" name="menuLine_Operations">
+    <property name="title">
+     <string>B&amp;lank Ops</string>
+    </property>
+    <addaction name="actionLeading_WS_to_Tabs"/>
+    <addaction name="actionLeading_WS_to_Spaces"/>
+   </widget>
    <addaction name="menuVisual"/>
    <addaction name="menuZoom"/>
    <addaction name="menuModification"/>
+   <addaction name="menuTheming"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuLine_Operations"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -139,7 +164,54 @@
   </action>
   <action name="actionSet_Document_Unmodified">
    <property name="text">
-    <string>Set Document Unmodified</string>
+    <string>&amp;Set Document Unmodified</string>
+   </property>
+  </action>
+  <action name="actionReload_Theme_Files">
+   <property name="text">
+    <string>&amp;Reload Theme Files</string>
+   </property>
+  </action>
+  <action name="actionMove_Selection_Up">
+   <property name="text">
+    <string>Move Selection Up</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Up</string>
+   </property>
+  </action>
+  <action name="actionMove_Selection_Down">
+   <property name="text">
+    <string>Move Selection Down</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Down</string>
+   </property>
+  </action>
+  <action name="actionDelete_Selected_Blocks">
+   <property name="text">
+    <string>Delete Selected Blocks</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionDuplicate_Selected_Blocks">
+   <property name="text">
+    <string>Duplicate Selected Blocks</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionLeading_WS_to_Tabs">
+   <property name="text">
+    <string>Leading WS to Tabs</string>
+   </property>
+  </action>
+  <action name="actionLeading_WS_to_Spaces">
+   <property name="text">
+    <string>Leading WS to Spaces</string>
    </property>
   </action>
  </widget>
