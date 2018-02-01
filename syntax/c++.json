@@ -1,0 +1,50 @@
+{
+	"name": "C++",
+	"mime": "text/x-c++src",
+	"fileExtensions": ["cpp", "c++", "cxx", "h", "hpp", "hxx", "h++", "moc"],
+	"keywords": [
+		{
+			"words": ["false", "true", "null", "this"],
+			"type": "SyntaxConstant"
+		},
+		{
+			"words": ["char", "double", "float", "int", "long", "short", "signed",
+					 "unsigned", "void", "bool"],
+			"type": "SyntaxType"
+		},
+		{
+			"words": ["class", "const", "enum", "explicit", "friend", "inline", "namespace",
+					 "operator", "private", "protected", "public", "while", "return", "for"],
+			"type": "SyntaxKeyword"
+		}
+	],
+	
+	"regexRules": [
+		{
+			"regex": "\\(|\\)|\\{|\\}|\\[|\\]|,|;|=|\\+|\\-|\\.|\\:",
+			"type": "SyntaxSymbol"
+		},
+		{
+			"regex": "\\&|\\=|\\!|<|>|\\*|-|\\+|\\.|\\?|\\%",
+			"type": "SyntaxOperator"
+		},
+		{
+			"regex": "\\W(\\d+\\w*)",
+			"captureGroup": 1,
+			"type": "SyntaxNumber"
+		},
+		{
+			"regex": "\"(?:[^\"\\\\]|\\\\.)*\"",
+			"type": "SyntaxString"
+		},
+		{
+			"regex": "'(?:[^'\\\\]|\\\\.)*'",
+			"type": "SyntaxString"
+		},
+		{
+			"regex": "//[^\n]*",
+			"type": "SyntaxComment"
+		}
+	]
+
+}

@@ -1,5 +1,7 @@
 #include "syntaxdefinitiondatabase.h"
 
+#include <QDir>
+
 #include "syntaxdefinitiondata.h"
 
 namespace ote {
@@ -52,6 +54,17 @@ void SyntaxDefinitionDatabase::loadFromFile(QString filePath)
 	else
 		delete d;
 
+}
+
+void SyntaxDefinitionDatabase::loadFromDir(QString dirPath)
+{
+	QDir dir(dirPath);
+
+	if(!dir.exists())
+		return;
+
+	for(const auto& filePath : dir.entryInfoList(QStringList() << "*.json"))
+		loadFromFile(filePath.absoluteFilePath());
 }
 
 std::vector<SyntaxDefinition> SyntaxDefinitionDatabase::getAllDefinitions()

@@ -26,7 +26,7 @@ public:
 	void setSyntaxDefnition(SyntaxDefinition d);
 	SyntaxDefinition getSyntaxDefinition() const { return m_currentSyntaxDefinition; }
 
-	void setShowWhitespace(bool show);
+	void setWhitespaceVisible(bool show);
 	void setShowLinebreaks(bool show);
 	void setSmartIndent(bool enable);
 	void setTabToSpaces(bool enable);
@@ -78,6 +78,7 @@ public:
 	int getZoomLevel() const;
 
 	// Modification status
+	void clearHistory();
 	int getModificationRevision() const;
 	bool isModified() const;
 	void setModified(bool modified);

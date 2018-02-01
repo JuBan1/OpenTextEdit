@@ -1,0 +1,32 @@
+{
+	"name": "dracula",
+	
+	"TextEditText": "#50fa7b",
+	"TextEditActiveText": "#f8f8f8",
+	"TextEditBackground": "#282a36",
+	"TextEditActiveBackground": "#19ffffff",
+	
+	"GutterText": "#6d8a88",
+	"GutterActiveText": "#ffffff",
+	"GutterBackground": "#282a36",
+	"GutterActiveBackground": "#323232",
+	
+	"SyntaxComment": "#6272a4",
+	"SyntaxString": "#f1fa8c",
+	"SyntaxNumber": "#bd93f9",
+	"SyntaxConstant": "#bd93f9",
+	"SyntaxType": "#ffb86c",
+	"SyntaxKeyword": "#ff79c6",
+	"SyntaxSymbol": "#ffffff",
+	
+	"SyntaxMatchingBracket": {
+		"backgroundColor": "#19ffffff",
+		"underlineStyle": "SingleUnderline",
+		"underlineColor": "#ffffff"
+	},
+	
+	"SyntaxOperator": "#ff79c6",
+	"SearchHighlight": "#3264ff64"
+
+	
+} 

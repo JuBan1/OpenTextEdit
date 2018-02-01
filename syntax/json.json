@@ -1,0 +1,31 @@
+ {
+	"name": "Json",
+	"mime": "text/x-json",
+	"fileExtensions": ["json"],
+
+	"regexRules": [
+		{
+			"regex": "\\{|\\}|\\[|\\]|,|\\+|\\-|\\.|\\:",
+			"type": "SyntaxSymbol"
+		},
+		{
+			"regex": "\\W(\\d+\\w*)",
+			"captureGroup": 1,
+			"type": "SyntaxNumber"
+		},
+		{
+			"regex": "\"(?:[^\"\\\\]|\\\\.)*\"",
+			"type": "SyntaxString"
+		},
+		{
+			"regex": "'(?:[^'\\\\]|\\\\.)*'",
+			"type": "SyntaxString"
+		},
+		{
+			"regex": "(\"\\w*\")\\s*\\:",
+			"captureGroup": 1,
+			"type": "SyntaxType"
+		}
+	]
+
+}

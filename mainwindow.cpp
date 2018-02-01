@@ -33,12 +33,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	*/
 
 
-	ote::ThemeDatabase::loadFromFile("/home/s3rius/dev/qt/OpenTextEdit/themes/dracula.json");
-	ote::SyntaxDefinitionDatabase::loadFromFile("/home/s3rius/dev/qt/OpenTextEdit/syntax/c++.json");
+	ote::ThemeDatabase::loadFromDir("/home/s3rius/dev/qt/OpenTextEdit/themes");
+	ote::SyntaxDefinitionDatabase::loadFromDir("/home/s3rius/dev/qt/OpenTextEdit/syntax");
 
 
-	ui->plainTextEdit->setTheme(Theme("dracula"));
-	ui->plainTextEdit->setSyntaxDefnition(SyntaxDefinition("C++"));
+	//ui->plainTextEdit->setTheme(Theme("dracula"));
+	//ui->plainTextEdit->setSyntaxDefnition(SyntaxDefinition("Json"));
 
 
 	QLabel* l = new QLabel("Document unmodified");
@@ -95,7 +95,7 @@ void MainWindow::on_actionSelect_Dark_Theme_triggered()
 
 void MainWindow::on_actionShow_Whitespace_toggled(bool arg1)
 {
-	ui->plainTextEdit->setShowWhitespace(arg1);
+	ui->plainTextEdit->setWhitespaceVisible(arg1);
 }
 
 void MainWindow::on_actionShow_Linebreaks_toggled(bool arg1)
@@ -140,7 +140,7 @@ void MainWindow::on_actionSet_Document_Unmodified_triggered()
 
 void MainWindow::on_actionReload_Theme_Files_triggered()
 {
-	ote::ThemeDatabase::loadFromFile("/home/s3rius/dev/qt/OpenTextEdit/themes/dracula.json");
+	ote::ThemeDatabase::loadFromDir("/home/s3rius/dev/qt/OpenTextEdit/themes");
 	ui->plainTextEdit->setTheme(ui->plainTextEdit->getTheme());
 }
 
@@ -172,4 +172,10 @@ void MainWindow::on_actionLeading_WS_to_Tabs_triggered()
 void MainWindow::on_actionLeading_WS_to_Spaces_triggered()
 {
 	ui->plainTextEdit->trimWhitespace(true, true);
+}
+
+void MainWindow::on_actionReload_Syntax_Files_triggered()
+{
+	ote::SyntaxDefinitionDatabase::loadFromDir("/home/s3rius/dev/qt/OpenTextEdit/syntax");
+	ui->plainTextEdit->setSyntaxDefnition(ui->plainTextEdit->getSyntaxDefinition());
 }

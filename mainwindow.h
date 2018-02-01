@@ -52,6 +52,8 @@ private slots:
 
 	void on_actionLeading_WS_to_Spaces_triggered();
 
+	void on_actionReload_Syntax_Files_triggered();
+
 private:
 	Ui::MainWindow *ui;
 };

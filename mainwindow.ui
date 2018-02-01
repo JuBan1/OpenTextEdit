@@ -64,6 +64,7 @@
     <addaction name="actionSelect_Light_Theme"/>
     <addaction name="actionSelect_Dark_Theme"/>
     <addaction name="actionReload_Theme_Files"/>
+    <addaction name="actionReload_Syntax_Files"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -174,7 +175,7 @@
   </action>
   <action name="actionMove_Selection_Up">
    <property name="text">
-    <string>Move Selection Up</string>
+    <string>&amp;Move Selection Up</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+Up</string>
@@ -182,7 +183,7 @@
   </action>
   <action name="actionMove_Selection_Down">
    <property name="text">
-    <string>Move Selection Down</string>
+    <string>Move &amp;Selection Down</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+Down</string>
@@ -190,7 +191,7 @@
   </action>
   <action name="actionDelete_Selected_Blocks">
    <property name="text">
-    <string>Delete Selected Blocks</string>
+    <string>&amp;Delete Selected Blocks</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
@@ -198,7 +199,7 @@
   </action>
   <action name="actionDuplicate_Selected_Blocks">
    <property name="text">
-    <string>Duplicate Selected Blocks</string>
+    <string>Duplicate Selected &amp;Blocks</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+D</string>
@@ -206,12 +207,17 @@
   </action>
   <action name="actionLeading_WS_to_Tabs">
    <property name="text">
-    <string>Leading WS to Tabs</string>
+    <string>&amp;Leading WS to Tabs</string>
    </property>
   </action>
   <action name="actionLeading_WS_to_Spaces">
    <property name="text">
-    <string>Leading WS to Spaces</string>
+    <string>Leading &amp;WS to Spaces</string>
+   </property>
+  </action>
+  <action name="actionReload_Syntax_Files">
+   <property name="text">
+    <string>Reload Syntax Files</string>
    </property>
   </action>
  </widget>

@@ -20,12 +20,13 @@ namespace ote {
 
 static bool isFixedPitch(const QFont & font) {
 	const QFontInfo fi(font);
-	qDebug() << fi.family() << fi.fixedPitch();
+	//qDebug() << fi.family() << fi.fixedPitch();
 	return fi.fixedPitch();
 }
 
 static QFont getMonospaceFont(){
 	QFont font("monospace");
+	font.setFixedPitch(true);
 	font.setStyleHint(QFont::Monospace);
 	if (isFixedPitch(font)) return font;
 	font.setStyleHint(QFont::TypeWriter);
@@ -85,14 +86,14 @@ void TextEdit::setSyntaxDefnition(SyntaxDefinition d)
 	m_highlighter->rehighlight();
 }
 
-void TextEdit::setShowWhitespace(bool show)
+void TextEdit::setWhitespaceVisible(bool show)
 {
 	auto opts = document()->defaultTextOption();
 	auto flags = opts.flags();
 
 	show ?
 		flags |= QTextOption::ShowTabsAndSpaces :
-		flags ^= QTextOption::ShowTabsAndSpaces;
+		flags &= QTextOption::ShowTabsAndSpaces;
 
 	opts.setFlags(flags);
 	document()->setDefaultTextOption( opts );
@@ -136,6 +137,7 @@ void TextEdit::setFont(QFont font)
 		qWarning() << "Selected font is not fixed pitch.";
 
 	QPlainTextEdit::setFont(font);
+	document()->setDefaultFont(font);
 	setTabWidth(m_tabWidth);
 }
 
@@ -164,7 +166,8 @@ int TextEdit::getLineCount() const
 void TextEdit::setCursorPosition(int line, int column)
 {
 	const auto& block = document()->findBlockByLineNumber(line);
-	setAbsoluteCursorPosition( block.position() + std::min(column, block.length()-1) );
+	const auto col = std::max(0, std::min(column, block.length()-1));
+	setAbsoluteCursorPosition( block.position() + col );
 }
 
 void TextEdit::setCursorPosition(const TextEdit::CursorPos& pos)
@@ -295,6 +298,11 @@ void TextEdit::zoomOut()
 int TextEdit::getZoomLevel() const
 {
 	return m_pointZoom;
+}
+
+void TextEdit::clearHistory()
+{
+	document()->clearUndoRedoStacks();
 }
 
 int TextEdit::getModificationRevision() const

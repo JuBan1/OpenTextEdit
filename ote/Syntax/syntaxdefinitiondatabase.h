@@ -18,6 +18,7 @@ public:
 	static void addDefinition(SyntaxDefinitionData* data);
 
 	static void loadFromFile(QString filePath);
+	static void loadFromDir(QString dirPath);
 
 	static std::vector<SyntaxDefinition> getAllDefinitions();
 
