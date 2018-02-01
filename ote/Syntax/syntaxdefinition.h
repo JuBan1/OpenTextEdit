@@ -28,7 +28,6 @@ public:
 	};
 
 	const QString& getName() const;
-	const QString& getMimeType() const;
 
 	const QVector<WordHighlightGroup>& getKeywordGroups() const;
 	const QVector<RegexHighlightGroup>& getRegexGroups() const;

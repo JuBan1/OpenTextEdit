@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <map>
+#include <memory>
 
 #include "theme.h"
 
@@ -15,7 +16,7 @@ class ThemeDatabase
 public:
 	static bool hasTheme(QString name);
 	static Theme getTheme(QString name);
-	static void addTheme(ThemeData* data);
+	static void addTheme(std::unique_ptr<ThemeData> data);
 
 	static void loadFromFile(QString filePath);
 	static void loadFromDir(QString dirPath);
@@ -25,9 +26,9 @@ public:
 private:
 	ThemeDatabase() = delete;
 
-	static std::map<QString, ThemeData*> createThemeDB();
+	static std::map<QString, std::unique_ptr<ThemeData>> createThemeDB();
 
-	static std::map<QString, ThemeData*> s_themes;
+	static std::map<QString, std::unique_ptr<ThemeData>> s_themes;
 };
 
 } // namespace ote

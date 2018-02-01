@@ -1,6 +1,5 @@
 {
 	"name": "C++",
-	"mime": "text/x-c++src",
 	"fileExtensions": ["cpp", "c++", "cxx", "h", "hpp", "hxx", "h++", "moc"],
 	"keywords": [
 		{

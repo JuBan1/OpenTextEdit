@@ -6,20 +6,20 @@
 
 namespace ote {
 
-std::map<QString, ThemeData*> ThemeDatabase::createThemeDB() {
-	std::map<QString, ThemeData*> map;
+std::map<QString, std::unique_ptr<ThemeData>> ThemeDatabase::createThemeDB() {
+	std::map<QString, std::unique_ptr<ThemeData>> map;
 
-	ThemeData* defaultTheme = new ThemeData("");
+	std::unique_ptr<ThemeData> defaultTheme(new ThemeData(""));
 
 	for(int i=0; i<Theme::MAX_ITEMS; ++i)
 		defaultTheme->set(static_cast<Theme::HighlightElements>(i), Qt::black);
 
-	map[defaultTheme->getName()] = defaultTheme;
+	map[defaultTheme->getName()] = std::move(defaultTheme);
 
 	return map;
 }
 
-std::map<QString, ThemeData*> ThemeDatabase::s_themes = createThemeDB();
+std::map<QString, std::unique_ptr<ThemeData>> ThemeDatabase::s_themes = createThemeDB();
 
 bool ThemeDatabase::hasTheme(QString name)
 {
@@ -30,30 +30,27 @@ Theme ThemeDatabase::getTheme(QString name)
 {
 	auto it = s_themes.find(name);
 	if (it != s_themes.end())
-		return Theme(it->second);
+		return Theme(it->second.get());
 
-	return Theme(s_themes.at(""));
+	return Theme(s_themes.at("").get());
 }
 
-void ThemeDatabase::addTheme(ThemeData* data)
+void ThemeDatabase::addTheme(std::unique_ptr<ThemeData> data)
 {
 	auto it = s_themes.find(data->getName());
 	if (it == s_themes.end())
-		s_themes[data->getName()] = data;
+		s_themes[data->getName()] = std::move(data);
 	else {
-		it->second->override(data);
-		delete data;
+		it->second->override(data.get());
 	}
 }
 
 void ThemeDatabase::loadFromFile(QString filePath)
 {
-	ThemeData* d = new ThemeData();
-	if (d->loadFromFile(filePath))
-		addTheme(d);
-	else
-		delete d;
+	auto d = std::unique_ptr<ThemeData>(new ThemeData());
 
+	if (d->loadFromFile(filePath))
+		addTheme(std::move(d));
 }
 
 void ThemeDatabase::loadFromDir(QString dirPath)
@@ -72,7 +69,7 @@ std::vector<Theme> ThemeDatabase::getAllThemes()
 	std::vector<Theme> themes;
 
 	for(const auto& item : s_themes)
-		themes.push_back( Theme(item.second) );
+		themes.push_back( Theme(item.second.get()) );
 
 	return themes;
 }

@@ -1,6 +1,8 @@
 #ifndef COMPOSITEHIGHLIGHTER_H
 #define COMPOSITEHIGHLIGHTER_H
 
+#include <memory>
+
 #include <QRegularExpression>
 #include <QSyntaxHighlighter>
 
@@ -48,8 +50,11 @@ public:
 	Theme m_theme;
 	SyntaxDefinition m_definition;
 
-	BracketMatcherComponent* m_bracketMatcher = new BracketMatcherComponent(this);
-	SyntaxHighlighterComponent* m_syntaxHighlighter = new SyntaxHighlighterComponent(this);
+	std::unique_ptr<BracketMatcherComponent> m_bracketMatcher =
+			std::make_unique<BracketMatcherComponent>(this);
+
+	std::unique_ptr<SyntaxHighlighterComponent> m_syntaxHighlighter =
+			std::make_unique<SyntaxHighlighterComponent>(this);
 };
 
 } // namespace ote

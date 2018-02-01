@@ -19,6 +19,7 @@ void SyntaxHighlighterComponent::setup()
 	auto d = m_highlighter->getSyntaxDefinition();
 	Theme t = m_highlighter->getTheme();
 
+	wordRules.clear();
 	highlightingRules.clear();
 
 	for(const auto& l : d.getKeywordGroups()){

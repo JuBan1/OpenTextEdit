@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <map>
+#include <memory>
 
 #include "syntaxdefinition.h"
 
@@ -15,7 +16,7 @@ class SyntaxDefinitionDatabase
 public:
 	static bool hasDefinition(QString name);
 	static SyntaxDefinition getDefinition(QString name);
-	static void addDefinition(SyntaxDefinitionData* data);
+	static void addDefinition(std::unique_ptr<SyntaxDefinitionData> data);
 
 	static void loadFromFile(QString filePath);
 	static void loadFromDir(QString dirPath);
@@ -25,9 +26,9 @@ public:
 private:
 	SyntaxDefinitionDatabase() = delete;
 
-	static std::map<QString, SyntaxDefinitionData*> createDefinitionDB();
+	static std::map<QString, std::unique_ptr<SyntaxDefinitionData>> createDefinitionDB();
 
-	static std::map<QString, SyntaxDefinitionData*> s_definitions;
+	static std::map<QString, std::unique_ptr<SyntaxDefinitionData>> s_definitions;
 };
 
 } // namespace ote

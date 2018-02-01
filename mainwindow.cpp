@@ -37,8 +37,21 @@ MainWindow::MainWindow(QWidget *parent) :
 	ote::SyntaxDefinitionDatabase::loadFromDir("/home/s3rius/dev/qt/OpenTextEdit/syntax");
 
 
+	auto list = ote::SyntaxDefinitionDatabase::getAllDefinitions();
+
+	for(auto s : list) {
+		QString name = s.getName();
+		QAction* action = new QAction(s.getName());
+		connect(action, &QAction::triggered, [this, name](){
+			ui->plainTextEdit->setSyntaxDefnition(ote::SyntaxDefinition(name));
+		});
+
+		ui->menuTheming->addAction(action);
+	}
+
+
 	ui->plainTextEdit->setTheme(Theme("dracula"));
-	ui->plainTextEdit->setSyntaxDefnition(SyntaxDefinition("Json"));
+	ui->plainTextEdit->setSyntaxDefnition(SyntaxDefinition("JSON"));
 
 
 	QLabel* l = new QLabel("Document unmodified");
@@ -171,7 +184,7 @@ void MainWindow::on_actionLeading_WS_to_Tabs_triggered()
 
 void MainWindow::on_actionLeading_WS_to_Spaces_triggered()
 {
-	ui->plainTextEdit->trimWhitespace(true, true);
+	ui->plainTextEdit->convertLeadingWhitespaceToSpaces();
 }
 
 void MainWindow::on_actionReload_Syntax_Files_triggered()

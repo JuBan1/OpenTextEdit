@@ -12,7 +12,6 @@ class SyntaxDefinitionData
 public:
 
 	const QString& getName() const { return m_name; }
-	const QString& getMimeType() const { return m_mimeType; }
 
 private:
 	Q_DISABLE_COPY(SyntaxDefinitionData)
@@ -29,7 +28,6 @@ private:
 	void addRegexGroup(const QJsonValue& val);
 
 	QString m_name;
-	QString m_mimeType;
 	QVector<SyntaxDefinition::WordHighlightGroup> wordGroups;
 	QVector<SyntaxDefinition::RegexHighlightGroup> regexGroups;
 };

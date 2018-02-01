@@ -91,10 +91,7 @@ void TextEdit::setWhitespaceVisible(bool show)
 	auto opts = document()->defaultTextOption();
 	auto flags = opts.flags();
 
-	show ?
-		flags |= QTextOption::ShowTabsAndSpaces :
-		flags &= QTextOption::ShowTabsAndSpaces;
-
+	flags.setFlag(QTextOption::ShowTabsAndSpaces, show);
 	opts.setFlags(flags);
 	document()->setDefaultTextOption( opts );
 }
@@ -563,10 +560,8 @@ void TextEdit::onSelectionChanged()
 	int j = 0;
 
 	ExtraSelectionList list;
-	const QColor color = m_currentTheme.getColor(Theme::SearchHighlight);
 	QTextEdit::ExtraSelection selection;
-	selection.format.setBackground(color);
-	//selection.format.setForeground(m_currentTheme.getColor(Theme::HighlightText));
+	selection.format.setBackground(m_currentTheme.getColor(Theme::SearchHighlight));
 
 	while ((j = fullText.indexOf(text, j)) != -1) {
 		selection.cursor = cursor;

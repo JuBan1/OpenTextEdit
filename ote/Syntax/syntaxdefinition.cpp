@@ -19,11 +19,6 @@ const QString& SyntaxDefinition::getName() const
 	return m_data->getName();
 }
 
-const QString& SyntaxDefinition::getMimeType() const
-{
-	return m_data->getMimeType();
-}
-
 const QVector<SyntaxDefinition::WordHighlightGroup>&SyntaxDefinition::getKeywordGroups() const
 {
 	return m_data->wordGroups;

@@ -1,6 +1,5 @@
  {
-	"name": "Json",
-	"mime": "text/x-json",
+	"name": "JSON",
 	"fileExtensions": ["json"],
 
 	"regexRules": [
