@@ -127,8 +127,21 @@ void TextEdit::setWordWrap(bool enable)
 
 void TextEdit::setTabWidth(int tabWidth)
 {
+	// Calculating letter width using QFrontMetrics isn't 100% accurate. Small inaccuracies
+	// can accumulate over time. Instead, we can calculate a good letter spacing value and
+	// make the font use it.
+	// https://stackoverflow.com/a/42071875/1038629
 	m_tabWidth = tabWidth;
-	setTabStopDistance(tabWidth * fontMetrics().width(' '));
+
+	auto font = this->font();
+	QFontMetricsF fm (font);
+	auto stopWidth = tabWidth * fm.width(' ');
+	auto letterSpacing = (ceil(stopWidth) - stopWidth) / tabWidth;
+
+	font.setLetterSpacing(QFont::AbsoluteSpacing, letterSpacing);
+	QPlainTextEdit::setFont(font);
+
+	setTabStopDistance(ceil(stopWidth));
 }
 
 void TextEdit::setFont(QFont font)
@@ -137,7 +150,6 @@ void TextEdit::setFont(QFont font)
 		qWarning() << "Selected font is not fixed pitch.";
 
 	QPlainTextEdit::setFont(font);
-	document()->setDefaultFont(font);
 	setTabWidth(m_tabWidth);
 }
 

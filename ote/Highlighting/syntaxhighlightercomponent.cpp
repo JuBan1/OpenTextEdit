@@ -21,7 +21,6 @@ void SyntaxHighlighterComponent::setup()
 
 	highlightingRules.clear();
 
-
 	for(const auto& l : d.getKeywordGroups()){
 		wordRules.append( {l.words, t.getFormat(l.type)} );
 	}
@@ -29,11 +28,6 @@ void SyntaxHighlighterComponent::setup()
 	for(const auto& l : d.getRegexGroups()){
 		highlightingRules.append( {l.pattern, t.getFormat(l.type), l.captureGroup} );
 	}
-
-	// Single-line comments
-	/*rule.pattern = QRegularExpression("//[^\n]*");
-	rule.format = t.getFormat(Theme::SyntaxComment);
-	highlightingRules.append(rule);*/
 
 	// Multi-line comments
 	multiLineCommentFormat = t.getFormat(Theme::SyntaxComment);

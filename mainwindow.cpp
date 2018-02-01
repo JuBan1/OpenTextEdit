@@ -37,8 +37,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	ote::SyntaxDefinitionDatabase::loadFromDir("/home/s3rius/dev/qt/OpenTextEdit/syntax");
 
 
-	//ui->plainTextEdit->setTheme(Theme("dracula"));
-	//ui->plainTextEdit->setSyntaxDefnition(SyntaxDefinition("Json"));
+	ui->plainTextEdit->setTheme(Theme("dracula"));
+	ui->plainTextEdit->setSyntaxDefnition(SyntaxDefinition("Json"));
 
 
 	QLabel* l = new QLabel("Document unmodified");
