@@ -3,29 +3,36 @@
 	"fileExtensions": ["cpp", "c++", "cxx", "h", "hpp", "hxx", "h++", "moc"],
 	"keywords": [
 		{
-			"words": ["false", "true", "null", "this"],
+			"keywords": ["false", "true", "null", "this"],
 			"type": "SyntaxConstant"
 		},
 		{
-			"words": ["char", "double", "float", "int", "long", "short", "signed",
-					 "unsigned", "void", "bool"],
+			"keywords": ["char", "double", "float", "int", "long", "short", "signed",
+					 	"unsigned", "void", "bool", "auto"],
 			"type": "SyntaxType"
 		},
 		{
-			"words": ["class", "const", "enum", "explicit", "friend", "inline", "namespace",
-					 "operator", "private", "protected", "public", "while", "return", "for"],
+			"keywords": ["class", "const", "enum", "explicit", "friend", "inline", "namespace",
+					 	"operator", "private", "protected", "public", "while", "return", "for"],
 			"type": "SyntaxKeyword"
+		}
+	],
+	
+	"operators": [
+		{
+			"operators": "(){}[],;",
+			"type": "SyntaxSymbol"
+		},
+		{
+			"operators": "+-.%=&*/<>?~^!:|",
+			"type": "SyntaxOperator"
 		}
 	],
 	
 	"regexRules": [
 		{
-			"regex": "\\(|\\)|\\{|\\}|\\[|\\]|,|;|=|\\+|\\-|\\.|\\:",
-			"type": "SyntaxSymbol"
-		},
-		{
-			"regex": "\\&|\\=|\\!|<|>|\\*|-|\\+|\\.|\\?|\\%",
-			"type": "SyntaxOperator"
+			"regex": "::",
+			"type": "TextEditText"
 		},
 		{
 			"regex": "\\W(\\d+\\w*)",

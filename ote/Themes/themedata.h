@@ -16,8 +16,8 @@ public:
 
 	QString getName() const { return m_name; }
 
-	QColor getColor(Theme::HighlightElements colorEnum);
-	QTextCharFormat getFormat(Theme::HighlightElements colorEnum);
+	QColor getColor(Theme::HighlightElements colorEnum) const;
+	QTextCharFormat getFormat(Theme::HighlightElements colorEnum) const;
 
 	ThemeData& set(Theme::HighlightElements elem, const QColor& color);
 	ThemeData& set(Theme::HighlightElements elem, const QTextCharFormat& format);

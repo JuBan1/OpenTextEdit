@@ -19,6 +19,11 @@ const QString& SyntaxDefinition::getName() const
 	return m_data->getName();
 }
 
+const QVector<SyntaxDefinition::OperatorHighlightGroup>&SyntaxDefinition::getOperatorGroups() const
+{
+	return m_data->operatorGroups;
+}
+
 const QVector<SyntaxDefinition::WordHighlightGroup>&SyntaxDefinition::getKeywordGroups() const
 {
 	return m_data->wordGroups;

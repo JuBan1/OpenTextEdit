@@ -26,6 +26,33 @@ void SyntaxDefinitionData::override(const SyntaxDefinitionData* other)
 {
 	wordGroups = other->wordGroups;
 	regexGroups = other->regexGroups;
+	operatorGroups = other->operatorGroups;
+}
+
+void SyntaxDefinitionData::addOperatorGroups(const QJsonValue& val)
+{
+	if(!val.isObject()) {
+		qWarning() << "Error loading syntax definition: expected object but found " << val;
+		return;
+	}
+	const auto& obj = val.toObject();
+
+	if(!obj["type"].isString() || !obj["operators"].isString()) {
+		qWarning() << "Error loading syntax definition: operator group needs a 'type' and 'operators' member";
+		return;
+	}
+
+	const auto& type = obj["type"].toString();
+	const auto& operators = obj["operators"].toString();
+
+	const auto highlightType = Theme::stringToElement(type);
+
+	if(highlightType == Theme::MAX_ITEMS) {
+		qWarning() << "Error loading syntax definition: unknown type " << highlightType;
+		return;
+	}
+
+	operatorGroups.append( {operators, highlightType} );
 }
 
 void SyntaxDefinitionData::addWordGroup(const QJsonValue&  val) {
@@ -35,13 +62,13 @@ void SyntaxDefinitionData::addWordGroup(const QJsonValue&  val) {
 	}
 	const auto& obj = val.toObject();
 
-	if(!obj["type"].isString() || !obj["words"].isArray()) {
-		qWarning() << "Error loading syntax definition: word group needs a 'type' and 'words' member";
+	if(!obj["type"].isString() || !obj["keywords"].isArray()) {
+		qWarning() << "Error loading syntax definition: word group needs a 'type' and 'keywords' member";
 		return;
 	}
 
 	const auto& type = obj["type"].toString();
-	const auto& words = obj["words"].toArray();
+	const auto& words = obj["keywords"].toArray();
 
 	const auto highlightType = Theme::stringToElement(type);
 
@@ -116,6 +143,11 @@ bool SyntaxDefinitionData::loadFromFile(QString filePath)
 
 	m_name = doc["name"].toString();
 
+	const auto& operators = docObj["operators"].toArray();
+	for(const auto& def : operators) {
+		addOperatorGroups(def);
+	}
+
 	const auto& keywords = docObj["keywords"].toArray();
 	for(const auto& def : keywords) {
 		addWordGroup(def);
@@ -128,5 +160,7 @@ bool SyntaxDefinitionData::loadFromFile(QString filePath)
 
 	return true;
 }
+
+
 
 } // namespace ote

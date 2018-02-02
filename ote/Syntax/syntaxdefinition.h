@@ -16,6 +16,11 @@ public:
 	SyntaxDefinition();
 	SyntaxDefinition(QString name);
 
+	struct OperatorHighlightGroup {
+		QString operators;
+		Theme::HighlightElements type;
+	};
+
 	struct WordHighlightGroup {
 		QStringList words;
 		Theme::HighlightElements type;
@@ -29,6 +34,7 @@ public:
 
 	const QString& getName() const;
 
+	const QVector<OperatorHighlightGroup>& getOperatorGroups() const;
 	const QVector<WordHighlightGroup>& getKeywordGroups() const;
 	const QVector<RegexHighlightGroup>& getRegexGroups() const;
 

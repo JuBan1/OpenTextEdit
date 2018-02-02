@@ -16,48 +16,43 @@ SyntaxHighlighterComponent::SyntaxHighlighterComponent(CompositeHighlighter* h)
 
 void SyntaxHighlighterComponent::setup()
 {
-	auto d = m_highlighter->getSyntaxDefinition();
-	Theme t = m_highlighter->getTheme();
-
-	wordRules.clear();
-	highlightingRules.clear();
-
-	for(const auto& l : d.getKeywordGroups()){
-		wordRules.append( {l.words, t.getFormat(l.type)} );
-	}
-
-	for(const auto& l : d.getRegexGroups()){
-		highlightingRules.append( {l.pattern, t.getFormat(l.type), l.captureGroup} );
-	}
-
-	// Multi-line comments
-	multiLineCommentFormat = t.getFormat(Theme::SyntaxComment);
 	commentStartExpression = QRegularExpression("/\\*");
 	commentEndExpression = QRegularExpression("\\*/");
 }
 
 void SyntaxHighlighterComponent::highlightBlock(const QString& text)
 {
+	auto t = m_highlighter->getTheme();
+	auto d = m_highlighter->getSyntaxDefinition();
+
 	// highlight keywords
 	QRegularExpressionMatchIterator matchIterator = QRegularExpression("\\b\\w+\\b").globalMatch(text);
 	while (matchIterator.hasNext()) {
 		auto match = matchIterator.next();
 
-		for (const auto& rule : wordRules)
+		for (const auto& rule : d.getKeywordGroups())
 			if (rule.words.contains(match.captured()))
 				m_highlighter->setFormat(match.capturedStart(),
 										 match.capturedLength(),
-										 rule.format);
+										 t.getFormat(rule.type));
+	}
+
+	// highlight operators
+	for(const auto& item : d.getOperatorGroups()) {
+		for (int i=0; i<text.length(); ++i) {
+			if(item.operators.contains(text[i]))
+			   m_highlighter->setFormat(i, 1, t.getFormat(item.type));
+		}
 	}
 
 	// Other generic highlighting rules
-	for (const HighlightingRule& rule : highlightingRules) {
+	for (const auto& rule : d.getRegexGroups()) {
 		QRegularExpressionMatchIterator matchIterator = rule.pattern.globalMatch(text);
 		while (matchIterator.hasNext()) {
 			QRegularExpressionMatch match = matchIterator.next();
 			m_highlighter->setFormat(match.capturedStart(rule.captureGroup),
 									 match.capturedLength(rule.captureGroup),
-									 rule.format);
+									 t.getFormat(rule.type));
 		}
 	}
 
@@ -79,7 +74,7 @@ void SyntaxHighlighterComponent::highlightBlock(const QString& text)
 			commentLength = endIndex - startIndex
 							+ match.capturedLength();
 		}
-		m_highlighter->setFormat(startIndex, commentLength, multiLineCommentFormat);
+		m_highlighter->setFormat(startIndex, commentLength, t.getFormat(Theme::SyntaxComment));
 		startIndex = text.indexOf(commentStartExpression, startIndex + commentLength);
 	}
 }

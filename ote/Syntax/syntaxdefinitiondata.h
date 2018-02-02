@@ -24,10 +24,12 @@ private:
 	void override(const SyntaxDefinitionData* other);
 	bool loadFromFile(QString filePath);
 
+	void addOperatorGroups(const QJsonValue& val);
 	void addWordGroup(const QJsonValue& val);
 	void addRegexGroup(const QJsonValue& val);
 
 	QString m_name;
+	QVector<SyntaxDefinition::OperatorHighlightGroup> operatorGroups;
 	QVector<SyntaxDefinition::WordHighlightGroup> wordGroups;
 	QVector<SyntaxDefinition::RegexHighlightGroup> regexGroups;
 };

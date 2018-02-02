@@ -21,13 +21,13 @@ ThemeData::ThemeData(QString name)
 
 }
 
-QTextCharFormat ThemeData::getFormat(Theme::HighlightElements colorEnum)
+QTextCharFormat ThemeData::getFormat(Theme::HighlightElements colorEnum) const
 {
 	return m_formats[colorEnum];
 }
 
 
-QColor ThemeData::getColor(Theme::HighlightElements colorEnum) {
+QColor ThemeData::getColor(Theme::HighlightElements colorEnum) const {
 	return m_formats[colorEnum].foreground().color();
 }
 
