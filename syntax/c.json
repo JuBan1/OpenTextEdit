@@ -1,0 +1,58 @@
+{
+	"name": "C",
+	"fileExtensions": ["c", "h"],
+	"keywords": [
+		{
+			"keywords": ["false", "true"],
+			"type": "SyntaxConstant"
+		},
+		{
+			"keywords": ["char", "double", "float", "int", "long", "short", "signed",
+					 	"unsigned", "void", "auto", "register"],
+			"type": "SyntaxType"
+		},
+		{
+			"keywords": ["do", "const", "enum", "union", "extern", "static", "volatile",
+					 	"operator", "private", "protected", "public", "while", "return", "for", 
+						"struct", "break", "continue", "if", "else", "for", "switch", "case",
+						"default", "enum", "goto", "sizeof", "typedef"],
+			"type": "SyntaxKeyword"
+		}
+	],
+	
+	"operators": [
+		{
+			"operators": "(){}[],;",
+			"type": "SyntaxSymbol"
+		},
+		{
+			"operators": "+-.%=&*/<>?~^!:|",
+			"type": "SyntaxOperator"
+		}
+	],
+	
+	"regexRules": [
+		{
+			"regex": "#\\b\\w*\\b",
+			"type": "SyntaxComment"
+		},
+		{
+			"regex": "\\W(\\d+\\w*)",
+			"captureGroup": 1,
+			"type": "SyntaxNumber"
+		},
+		{
+			"regex": "\"(?:[^\"\\\\]|\\\\.)*\"",
+			"type": "SyntaxString"
+		},
+		{
+			"regex": "'(?:[^'\\\\]|\\\\.)*'",
+			"type": "SyntaxString"
+		},
+		{
+			"regex": "//[^\n]*",
+			"type": "SyntaxComment"
+		}
+	]
+
+}
