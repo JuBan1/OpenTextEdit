@@ -589,12 +589,19 @@ void TextEdit::createParenthesisSelection(int pos)
 
 void TextEdit::keyPressEvent(QKeyEvent* e)
 {
-	QPlainTextEdit::keyPressEvent(e);
 
-	if(e->key() == Qt::Key_Insert)
-		setOverwriteMode(!overwriteMode());
+	if(e->key() == Qt::Key_Tab && m_tabToSpaces) {
+		auto cursor = textCursor();
+		auto numSpaces = m_tabWidth - cursor.positionInBlock() % m_tabWidth;
+		if(numSpaces==0) numSpaces = m_tabWidth;
+		cursor.insertText(QString(numSpaces, ' '));
+		return;
+	}
 
 	if(e->key() == Qt::Key_Return && m_smartIndent) {
+		auto cursor = textCursor();
+		cursor.beginEditBlock();
+		QPlainTextEdit::keyPressEvent(e);
 		auto txt = textCursor().block().previous().text();
 
 		int txtPos = 0;
@@ -602,14 +609,25 @@ void TextEdit::keyPressEvent(QKeyEvent* e)
 			++txtPos;
 
 		textCursor().insertText( txt.mid(0,txtPos) );
+		cursor.endEditBlock();
+		return;
 	}
 
-	if(e->key() == Qt::Key_Tab && m_tabToSpaces) {
-		auto cursor = textCursor();
-		auto txt = cursor.block().text();
-		cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1);
-		cursor.insertText("    ");
+	if(e->key() == Qt::Key_Backspace && m_tabToSpaces) {
+		auto txt = textCursor().block().text();
+
+		if(txt.endsWith(QString(m_tabWidth, ' ')) && txt.length()%m_tabWidth==0) {
+			auto c = textCursor();
+			c.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, m_tabWidth);
+			c.removeSelectedText();
+			return;
+		}
 	}
+
+	QPlainTextEdit::keyPressEvent(e);
+
+	if(e->key() == Qt::Key_Insert)
+		setOverwriteMode(!overwriteMode());
 }
 
 void TextEdit::wheelEvent(QWheelEvent* event)
