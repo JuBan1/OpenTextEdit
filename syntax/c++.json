@@ -3,17 +3,32 @@
 	"fileExtensions": ["cpp", "c++", "cxx", "h", "hpp", "hxx", "h++", "moc"],
 	"keywords": [
 		{
-			"keywords": ["false", "true", "null", "this"],
+			"keywords": ["false", "true", 
+						 "nullptr", "this"],
 			"type": "SyntaxConstant"
 		},
 		{
 			"keywords": ["char", "double", "float", "int", "long", "short", "signed",
-					 	"unsigned", "void", "bool", "auto"],
+					 	 "unsigned", "void", 
+						 "auto", "register", "bool", 
+						 "char16_t", "char32_t"],
 			"type": "SyntaxType"
 		},
 		{
-			"keywords": ["class", "const", "enum", "explicit", "friend", "inline", "namespace",
-					 	"operator", "private", "protected", "public", "while", "return", "for"],
+			"keywords": ["do", "const", "enum", "union", "extern", "static", "volatile",
+					 	 "operator", "private", "protected", "public", "while", "return", "for", 
+						 "struct", "break", "continue", "if", "else", "for", "switch", "case",
+						 "default", "enum", "goto", "sizeof", "typedef", 
+						 "asm", "dynamic_cast",
+						 "catch", "class", "const_cast", "delete", "dynamic_cast", "explicit",
+						 "friend", "inline", "mutable", "namespace", "new", "operator", "private",
+						 "public", "protected", "reinterpret_cast", "static_cast", "template", 
+						 "throw", "try", "typeid", "typename", "using", "virtual", "wchar_t",
+						 "alignas", "alignof", "constexpr", "decltype", "default", "export",
+						 "noexcept", "static_assert", "thread_local", "using", 
+						 "and", "and_eq", "bitand", "bitor", "compl", "not", "not_eq", "or", "or_eq",
+						 "xor", "xor_eq",
+						 "final", "override"],
 			"type": "SyntaxKeyword"
 		}
 	],
@@ -30,6 +45,10 @@
 	],
 	
 	"regexRules": [
+		{
+			"regex": "#\\b\\w*\\b",
+			"type": "SyntaxComment"
+		},
 		{
 			"regex": "::",
 			"type": "TextEditText"
