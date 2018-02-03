@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 	ui->plainTextEdit->setTheme(Theme("dracula"));
-	ui->plainTextEdit->setSyntaxDefnition(SyntaxDefinition("JSON"));
+	ui->plainTextEdit->setSyntaxDefnition(SyntaxDefinition("C++"));
 
 
 	QLabel* l = new QLabel("Document unmodified");
@@ -81,14 +81,19 @@ MainWindow::MainWindow(QWidget *parent) :
 	//ui->plainTextEdit->setTextCursor( ui->plainTextEdit->cursorForPosition(QPoint(0,0)) );
 
 
-	ui->plainTextEdit->startFind("bool", QTextDocument::FindFlags(), 1000, 2500);
+	ui->plainTextEdit->startFind("bool", 1000, 2500);
 	connect(t, &QTimer::timeout, [this](){
 		ui->plainTextEdit->findNext();
 	});
 	//t->start();
 
 
-	ui->plainTextEdit->setCursorPosition(2000, 2);
+	connect(ui->plainTextEdit, &ote::TextEdit::selectionChanged, [this](){
+		auto s = ui->plainTextEdit->getSelection();
+		qDebug() << s.start.line << s.start.column << s.end.line << s.end.column;
+	});
+
+	//ui->plainTextEdit->setCursorPosition(2000, 2);
 }
 
 MainWindow::~MainWindow()

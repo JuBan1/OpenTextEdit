@@ -12,6 +12,8 @@
 #include "ote/Themes/theme.h"
 #include "ote/Syntax/syntaxdefinition.h"
 
+#include <memory>
+
 class QString;
 class QTextDocument;
 
@@ -50,11 +52,8 @@ public:
 	Theme m_theme;
 	SyntaxDefinition m_definition;
 
-	std::unique_ptr<BracketMatcherComponent> m_bracketMatcher =
-			std::make_unique<BracketMatcherComponent>(this);
-
-	std::unique_ptr<SyntaxHighlighterComponent> m_syntaxHighlighter =
-			std::make_unique<SyntaxHighlighterComponent>(this);
+	std::unique_ptr<BracketMatcherComponent> m_bracketMatcher;
+	std::unique_ptr<SyntaxHighlighterComponent> m_syntaxHighlighter;
 };
 
 } // namespace ote

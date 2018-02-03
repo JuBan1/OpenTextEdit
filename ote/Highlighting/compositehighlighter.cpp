@@ -2,9 +2,10 @@
 
 namespace ote {
 
-
 CompositeHighlighter::CompositeHighlighter(QTextDocument* parent)
-	: QSyntaxHighlighter (parent)
+	: QSyntaxHighlighter (parent),
+	  m_syntaxHighlighter(std::make_unique<SyntaxHighlighterComponent>(this)),
+	  m_bracketMatcher(std::make_unique<BracketMatcherComponent>(this))
 {
 
 }

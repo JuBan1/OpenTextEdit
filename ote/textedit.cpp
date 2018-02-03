@@ -174,9 +174,7 @@ int TextEdit::getLineCount() const
 
 void TextEdit::setCursorPosition(int line, int column)
 {
-	const auto& block = document()->findBlockByLineNumber(line);
-	const auto col = std::max(0, std::min(column, block.length()-1));
-	setAbsoluteCursorPosition( block.position() + col );
+	setAbsoluteCursorPosition( cursorPosToAbsolutePos({line, column}) );
 }
 
 void TextEdit::setCursorPosition(const TextEdit::CursorPos& pos)
@@ -202,6 +200,32 @@ int TextEdit::getAbsoluteCursorPosition() const
 	return textCursor().position();
 }
 
+QString TextEdit::getSelectedText() const
+{
+	return textCursor().selectedText();
+}
+
+TextEdit::Selection TextEdit::getSelection() const
+{
+	Selection s;
+	auto cursor = textCursor();
+	auto c = cursor;
+	c.setPosition(cursor.selectionStart());
+	s.start = {c.blockNumber(), c.positionInBlock()};
+	c.setPosition(cursor.selectionEnd());
+	s.end = {c.blockNumber(), c.positionInBlock()};
+
+	return s;
+}
+
+void TextEdit::setSelection(const TextEdit::Selection& sel)
+{
+	auto cur = textCursor();
+	cur.setPosition(cursorPosToAbsolutePos(sel.start));
+	cur.setPosition(cursorPosToAbsolutePos(sel.end), QTextCursor::KeepAnchor);
+	setTextCursor(cur);
+}
+
 QPoint TextEdit::getScrollPosition() const
 {
 	return { horizontalScrollBar()->sliderPosition(), verticalScrollBar()->sliderPosition() };
@@ -213,15 +237,12 @@ void TextEdit::setScrollPosition(const QPoint& p)
 	verticalScrollBar()->setSliderPosition(p.y());
 }
 
-void TextEdit::startFind(QString term, QTextDocument::FindFlags flags, int from, int to)
+void TextEdit::startFind(QString term, int from, int to)
 {
-	if(to==-1)
-		to = document()->characterCount()-1;
-
 	m_findRange = {from, to};
 
 	m_findTerm = term;
-	m_findFlags = flags;
+	m_findFlags = QTextDocument::FindFlags();
 	m_findActive = true;
 
 	/*auto c = textCursor();
@@ -235,34 +256,63 @@ void TextEdit::startFind(QString term, QTextDocument::FindFlags flags, int from,
 	m_extraSelections[ESSearchRange] = ExtraSelectionList() << selection;*/
 }
 
-TextEdit::Selection TextEdit::findNext()
+void TextEdit::findNext()
 {
+	//if(!m_findActive)
+	//	return;
+
 	auto curr = textCursor();
 	const auto startPos = m_findRange.first;
-	const auto endPos = m_findRange.second;
+	const auto endPos = m_findRange.second>0 ? m_findRange.second : document()->characterCount()-1;
+
 
 	if(curr.position() < startPos)
 		curr.setPosition(startPos);
 	else if(curr.position() > endPos)
 		curr.setPosition(endPos);
 
-	auto c = document()->find(m_findTerm, textCursor(), m_findFlags);
 
-	if(c.selectionEnd() > endPos)
+	auto c = document()->find(m_findTerm, curr, m_findFlags);
+	const bool fwd = !m_findFlags.testFlag(QTextDocument::FindBackward);
+
+	// If c moved past the search range or failed to find a match we want to loop around and retry.
+	if((fwd && c.isNull()) || c.selectionEnd() > endPos)
 		c = document()->find(m_findTerm, startPos, m_findFlags);
-	else if(c.selectionStart() < startPos)
+	else if((!fwd && c.isNull()) || c.selectionStart() < startPos)
 		c = document()->find(m_findTerm, endPos, m_findFlags);
 
-	if(c.selectionEnd() <= endPos && c.selectionStart() >= startPos)
+	if(!c.isNull() && c.selectionEnd() <= endPos && c.selectionStart() >= startPos) {
 		setTextCursor(c);
+	}
 
-	qDebug() << c.blockNumber() << c.positionInBlock();
-
-	return {};
+	return;
 }
 
-void TextEdit::setFindFlags(QTextDocument::FindFlags)
+void TextEdit::setFindRange(int from, int to)
 {
+	m_findRange = {from, to};
+}
+
+void TextEdit::setFindTerm(QString term, bool tentativeSearch)
+{
+	m_findTerm = term;
+
+	if(tentativeSearch) {
+		auto c = textCursor();
+		c.setPosition(c.selectionStart());
+		setTextCursor(c);
+		findNext();
+	}
+}
+
+void TextEdit::setFindFlags(QTextDocument::FindFlags flags)
+{
+	m_findFlags = flags;
+}
+
+void TextEdit::setFindFlag(QTextDocument::FindFlag flag, bool set)
+{
+	m_findFlags.setFlag(flag, set);
 }
 
 QTextDocument::FindFlags TextEdit::getFindFlags() const
@@ -1040,6 +1090,13 @@ TextEdit::BlockList TextEdit::getBlocksInRect(QRect rect) const
 	m_blockListCounter+=bl.size();
 	//qDebug() << m_blockListCounter << bl.size(); // << rect << contentOff << viewport()->height();
 	return bl;
+}
+
+int TextEdit::cursorPosToAbsolutePos(const TextEdit::CursorPos& pos) const
+{
+	const auto& block = document()->findBlockByLineNumber(pos.line);
+	const auto col = std::max(0, std::min(pos.column, block.length()-1));
+	return block.position() + col;
 }
 
 QTextBlock TextEdit::blockAtPosition(int y) const

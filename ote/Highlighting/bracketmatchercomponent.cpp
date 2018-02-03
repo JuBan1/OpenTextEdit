@@ -126,6 +126,9 @@ QPair<int,int> BracketMatcherComponent::findMatchingBracketPosition(QTextCursor 
 		const BracketInfo* info = infos.at(i);
 		const int relativePos = cursorPos - blockPos;
 
+		if(info->position > relativePos)
+			break;
+
 		if(info->position != relativePos-1 && info->position != relativePos)
 			continue;
 

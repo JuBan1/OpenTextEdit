@@ -28,6 +28,7 @@ const char* Theme::elementToString(Theme::HighlightElements elem)
 	CASE(SyntaxMatchingBracket)
 	CASE(SyntaxOperator)
 	CASE(SyntaxSymbol)
+	CASE(SyntaxVariable)
 	CASE(SearchHighlight)
 	CASE(MAX_ITEMS)
 	}
@@ -52,6 +53,7 @@ Theme::HighlightElements Theme::stringToElement(const char* elem)
 	IF(SyntaxMatchingBracket)
 	IF(SyntaxOperator)
 	IF(SyntaxSymbol)
+	IF(SyntaxVariable)
 	IF(SearchHighlight)
 	IF(MAX_ITEMS)
 
@@ -75,6 +77,11 @@ Theme::Theme(ThemeData* data)
 QString Theme::getName() const
 {
 	return m_data->getName();
+}
+
+bool Theme::isDefault() const
+{
+	return getName().isEmpty();
 }
 
 QTextCharFormat Theme::getFormat(HighlightElements c) const

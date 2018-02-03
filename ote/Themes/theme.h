@@ -15,7 +15,8 @@ class Theme
 {
 public:
 
-	// If you add/remove any items here be sure to also change the impl of elementToString(...)
+	// If you add/remove any items here be sure to also change the impl of elementToString(...) and
+	// stringToElement(...)
 	enum HighlightElements
 	{
 		TextEditText,
@@ -37,6 +38,7 @@ public:
 		SyntaxMatchingBracket,
 		SyntaxOperator,
 		SyntaxSymbol,
+		SyntaxVariable,
 
 		SearchHighlight,
 
@@ -52,6 +54,7 @@ public:
 	Theme(QString name);
 
 	QString getName() const;
+	bool isDefault() const;
 
 	QTextCharFormat getFormat(HighlightElements c) const;
 	QColor getColor(HighlightElements tc) const;

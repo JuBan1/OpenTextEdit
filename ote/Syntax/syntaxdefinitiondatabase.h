@@ -22,6 +22,8 @@ public:
 	static void loadFromDir(QString dirPath);
 
 	static std::vector<SyntaxDefinition> getAllDefinitions();
+	
+	static SyntaxDefinition findDefinitionForFileExtension(QString ext);
 
 private:
 	SyntaxDefinitionDatabase() = delete;

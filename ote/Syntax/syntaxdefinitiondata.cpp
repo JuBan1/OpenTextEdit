@@ -143,6 +143,18 @@ bool SyntaxDefinitionData::loadFromFile(QString filePath)
 
 	m_name = doc["name"].toString();
 
+	const auto& extensions = docObj["fileExtensions"].toArray();
+	if(!extensions.isEmpty()) {
+		for(const auto it : extensions)
+			if(it.isString())
+				m_fileExtensions << it.toString();
+	}
+
+	m_singleLineComment = doc["singleLineComment"].toString();
+	m_multiLineCommentStart = doc["multiLineCommentStart"].toString();
+	m_multiLineCommentEnd= doc["multiLineCommentEnd"].toString();
+
+
 	const auto& operators = docObj["operators"].toArray();
 	for(const auto& def : operators) {
 		addOperatorGroups(def);
@@ -150,6 +162,13 @@ bool SyntaxDefinitionData::loadFromFile(QString filePath)
 
 	const auto& keywords = docObj["keywords"].toArray();
 	for(const auto& def : keywords) {
+		if(!def["default"].isUndefined()) {
+			keywordDefault = Theme::stringToElement(def["default"].toString());
+			if(keywordDefault == Theme::MAX_ITEMS)
+				qWarning() << "Error loading syntax definition: unknown 'type' for keyword default";
+			continue;
+		}
+
 		addWordGroup(def);
 	}
 

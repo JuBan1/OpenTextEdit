@@ -48,11 +48,10 @@
 		{
 			"regex": "'(?:[^'\\\\]|\\\\.)*'",
 			"type": "SyntaxString"
-		},
-		{
-			"regex": "//[^\n]*",
-			"type": "SyntaxComment"
 		}
-	]
+	],
+	"multiLineCommentStart": "/*",
+	"multiLineCommentEnd": "*/",
+	"singleLineComment": "//"
 
 }

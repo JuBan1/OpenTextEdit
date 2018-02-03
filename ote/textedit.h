@@ -48,7 +48,7 @@ public:
 	};
 
 	struct Selection {
-		CursorPos begin;
+		CursorPos start;
 		CursorPos end;
 	};
 
@@ -59,14 +59,22 @@ public:
 	void setAbsoluteCursorPosition(int pos);
 	int getAbsoluteCursorPosition() const;
 
+	// Selection
+	QString getSelectedText() const;
+	Selection getSelection() const;
+	void setSelection(const Selection& sel);
+
 	// Scrolling
 	QPoint getScrollPosition() const;
 	void setScrollPosition(const QPoint& p);
 
 	// Finding
-	void startFind(QString term, QTextDocument::FindFlags flags, int from=0, int to=-1);
-	Selection findNext();
-	void setFindFlags(QTextDocument::FindFlags);
+	void startFind(QString term, int from=0, int to=-1);
+	void findNext();
+	void setFindRange(int from=0, int to=-1);
+	void setFindTerm(QString term, bool tentativeSearch=true);
+	void setFindFlags(QTextDocument::FindFlags flags);
+	void setFindFlag(QTextDocument::FindFlag flag, bool set);
 	QTextDocument::FindFlags getFindFlags() const;
 	void endFind();
 
@@ -138,6 +146,8 @@ private:
 
 	BlockList getBlocksInViewport() const;
 	BlockList getBlocksInRect(QRect rect) const;
+
+	int cursorPosToAbsolutePos(const CursorPos& pos) const;
 
 	void resizeEvent(QResizeEvent* event) override;
 	QTextBlock findClosingBlock(const QTextBlock& startBlock) const;

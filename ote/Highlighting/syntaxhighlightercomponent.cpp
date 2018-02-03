@@ -27,14 +27,26 @@ void SyntaxHighlighterComponent::highlightBlock(const QString& text)
 
 	// highlight keywords
 	QRegularExpressionMatchIterator matchIterator = QRegularExpression("\\b\\w+\\b").globalMatch(text);
+	bool found;
 	while (matchIterator.hasNext()) {
 		auto match = matchIterator.next();
+		found = false;
 
-		for (const auto& rule : d.getKeywordGroups())
-			if (rule.words.contains(match.captured()))
+		for (const auto& rule : d.getKeywordGroups()) {
+			if (rule.words.contains(match.captured())) {
 				m_highlighter->setFormat(match.capturedStart(),
 										 match.capturedLength(),
 										 t.getFormat(rule.type));
+				found = true;
+			}
+			if(found) break;
+		}
+		if(!found && d.getKeywordDefault() != Theme::MAX_ITEMS) {
+			m_highlighter->setFormat(match.capturedStart(),
+									 match.capturedLength(),
+									 t.getFormat(d.getKeywordDefault()));
+		}
+
 	}
 
 	// highlight operators
@@ -56,26 +68,48 @@ void SyntaxHighlighterComponent::highlightBlock(const QString& text)
 		}
 	}
 
+	// Search for a single-line comment first.
+	int slcStart = 0;
+	const auto& slc = d.getSingleLineComment();
+
+	if(!slc.isEmpty()) {
+		slcStart = text.indexOf(slc);
+		if(slcStart >= 0)
+			m_highlighter->setFormat(slcStart, text.length() - slcStart, t.getFormat(Theme::SyntaxComment));
+		else
+			slcStart = text.length();
+	}
+
+	int startIndex = 0;
+
 	// Handle multi-line comment highlighting
 	m_highlighter->setCurrentBlockState(0);
 
-	int startIndex = 0;
-	if (m_highlighter->previousBlockState() != 1)
-		startIndex = text.indexOf(commentStartExpression);
+	const auto& mlcStart = d.getMultiLineCommentStart();
+	const auto& mlcEnd = d.getMultiLineCommentEnd();
 
-	while (startIndex >= 0) {
-		QRegularExpressionMatch match = commentEndExpression.match(text, startIndex);
-		int endIndex = match.capturedStart();
+	if(mlcStart.isEmpty() || mlcEnd.isEmpty())
+		return;
+
+	const auto mlcEndLength = mlcEnd.length();
+
+
+	if (m_highlighter->previousBlockState() != 1)
+		startIndex = text.indexOf(mlcStart);
+
+	while (startIndex >= 0 && startIndex<=slcStart) {
+		const int endIndex = text.indexOf(mlcEnd, startIndex);
 		int commentLength = 0;
 		if (endIndex == -1) {
 			m_highlighter->setCurrentBlockState(1);
 			commentLength = text.length() - startIndex;
 		} else {
 			commentLength = endIndex - startIndex
-							+ match.capturedLength();
+							+ mlcEndLength;
 		}
+
 		m_highlighter->setFormat(startIndex, commentLength, t.getFormat(Theme::SyntaxComment));
-		startIndex = text.indexOf(commentStartExpression, startIndex + commentLength);
+		startIndex = text.indexOf(mlcStart, startIndex + commentLength);
 	}
 }
 

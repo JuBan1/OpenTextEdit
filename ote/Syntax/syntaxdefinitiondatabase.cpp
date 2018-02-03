@@ -1,5 +1,6 @@
 #include "syntaxdefinitiondatabase.h"
 
+#include <QDebug>
 #include <QDir>
 
 #include "syntaxdefinitiondata.h"
@@ -72,6 +73,23 @@ std::vector<SyntaxDefinition> SyntaxDefinitionDatabase::getAllDefinitions()
 		definitions.push_back( SyntaxDefinition(item.second.get()) );
 
 	return definitions;
+}
+
+SyntaxDefinition SyntaxDefinitionDatabase::findDefinitionForFileExtension(QString ext)
+{
+	if(ext.isEmpty())
+		return SyntaxDefinition("");
+	
+	ext = ext.mid( ext.lastIndexOf('.'), -1 );
+	if(ext.startsWith('.'))
+		ext = ext.remove(0,1);
+	
+	for(const auto& sd : s_definitions) {
+		if(sd.second->m_fileExtensions.contains(ext))
+			return SyntaxDefinition(sd.second.get());
+	}
+	
+	return SyntaxDefinition("");
 }
 
 } // namespace ote

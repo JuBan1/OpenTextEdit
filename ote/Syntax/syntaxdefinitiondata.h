@@ -29,9 +29,14 @@ private:
 	void addRegexGroup(const QJsonValue& val);
 
 	QString m_name;
+	QStringList m_fileExtensions;
+	QString m_singleLineComment;
+	QString m_multiLineCommentStart;
+	QString m_multiLineCommentEnd;
 	QVector<SyntaxDefinition::OperatorHighlightGroup> operatorGroups;
 	QVector<SyntaxDefinition::WordHighlightGroup> wordGroups;
 	QVector<SyntaxDefinition::RegexHighlightGroup> regexGroups;
+	Theme::HighlightElements keywordDefault = Theme::MAX_ITEMS;
 };
 
 } // namespace ote

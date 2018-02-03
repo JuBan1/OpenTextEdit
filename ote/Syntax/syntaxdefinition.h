@@ -33,10 +33,17 @@ public:
 	};
 
 	const QString& getName() const;
+	bool isDefault() const;
 
 	const QVector<OperatorHighlightGroup>& getOperatorGroups() const;
 	const QVector<WordHighlightGroup>& getKeywordGroups() const;
 	const QVector<RegexHighlightGroup>& getRegexGroups() const;
+
+	Theme::HighlightElements getKeywordDefault() const;
+
+	const QString& getSingleLineComment() const;
+	const QString& getMultiLineCommentStart() const;
+	const QString& getMultiLineCommentEnd() const;
 
 private:
 	friend class SyntaxDefinitionData;

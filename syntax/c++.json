@@ -30,6 +30,9 @@
 						 "xor", "xor_eq",
 						 "final", "override"],
 			"type": "SyntaxKeyword"
+		},
+		{
+			"default": "SyntaxVariable"
 		}
 	],
 	
@@ -65,11 +68,10 @@
 		{
 			"regex": "'(?:[^'\\\\]|\\\\.)*'",
 			"type": "SyntaxString"
-		},
-		{
-			"regex": "//[^\n]*",
-			"type": "SyntaxComment"
 		}
-	]
+	],
+	"multiLineCommentStart": "/*",
+	"multiLineCommentEnd": "*/",
+	"singleLineComment": "//"
 
 }
