@@ -17,6 +17,9 @@
 						"struct", "break", "continue", "if", "else", "for", "switch", "case",
 						"default", "enum", "goto", "sizeof", "typedef"],
 			"type": "SyntaxKeyword"
+		},
+		{
+			"default": "SyntaxVariable"
 		}
 	],
 	
@@ -32,6 +35,10 @@
 	],
 	
 	"regexRules": [
+		{
+			"regex": "#\\b\\w*\\b",
+			"type": "SyntaxComment"
+		},
 		{
 			"regex": "#\\b\\w*\\b",
 			"type": "SyntaxComment"

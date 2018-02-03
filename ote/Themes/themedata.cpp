@@ -44,7 +44,9 @@ ThemeData& ThemeData::set(Theme::HighlightElements elem, const QColor& color)
 
 void ThemeData::override(const ThemeData* other)
 {
-	m_formats = other->m_formats;
+	const auto name = m_name;
+	*this = *other;
+	m_name = name;
 }
 
 QTextCharFormat::UnderlineStyle stringToULStyle(QString s) {

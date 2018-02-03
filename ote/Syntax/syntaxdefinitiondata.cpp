@@ -24,9 +24,9 @@ SyntaxDefinitionData::SyntaxDefinitionData(QString name)
 
 void SyntaxDefinitionData::override(const SyntaxDefinitionData* other)
 {
-	wordGroups = other->wordGroups;
-	regexGroups = other->regexGroups;
-	operatorGroups = other->operatorGroups;
+	const auto name = m_name;
+	*this = *other;
+	m_name = name;
 }
 
 void SyntaxDefinitionData::addOperatorGroups(const QJsonValue& val)

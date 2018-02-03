@@ -23,11 +23,12 @@ public:
 	ThemeData& set(Theme::HighlightElements elem, const QTextCharFormat& format);
 
 private:
-	Q_DISABLE_COPY(ThemeData)
 	friend class ThemeDatabase;
 
 	ThemeData();
 	ThemeData(QString name);
+	ThemeData(const ThemeData&) = default;
+	ThemeData& operator=(const ThemeData&) = default;
 
 	void override(const ThemeData* other);
 	bool loadFromFile(QString filePath);

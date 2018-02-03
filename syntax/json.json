@@ -2,6 +2,12 @@
 	"name": "JSON",
 	"fileExtensions": ["json"],
 
+	 "keywords": [
+		 {
+		 	"default": "SyntaxNumber"
+		 }
+	 ],
+	 
 	"regexRules": [
 		{
 			"regex": "\\{|\\}|\\[|\\]|,|\\+|\\-|\\.|\\:",

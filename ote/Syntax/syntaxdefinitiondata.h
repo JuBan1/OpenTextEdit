@@ -14,12 +14,13 @@ public:
 	const QString& getName() const { return m_name; }
 
 private:
-	Q_DISABLE_COPY(SyntaxDefinitionData)
 	friend class SyntaxDefinition;
 	friend class SyntaxDefinitionDatabase;
 
 	SyntaxDefinitionData();
 	SyntaxDefinitionData(QString name);
+	SyntaxDefinitionData(const SyntaxDefinitionData&) = default;
+	SyntaxDefinitionData& operator=(const SyntaxDefinitionData&) = default;
 
 	void override(const SyntaxDefinitionData* other);
 	bool loadFromFile(QString filePath);
