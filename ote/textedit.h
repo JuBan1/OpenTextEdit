@@ -63,14 +63,16 @@ public:
 	QString getSelectedText() const;
 	Selection getSelection() const;
 	void setSelection(const Selection& sel);
+	void setTextInSelection(const QString& text);
 
 	// Scrolling
 	QPoint getScrollPosition() const;
 	void setScrollPosition(const QPoint& p);
 
-	// Finding
+	// Finding and replacing
 	void startFind(QString term, int from=0, int to=-1);
 	void findNext();
+	void ReplaceAndNext(const QString& replacement);
 	void setFindRange(int from=0, int to=-1);
 	void setFindTerm(QString term, bool tentativeSearch=true);
 	void setFindFlags(QTextDocument::FindFlags flags);

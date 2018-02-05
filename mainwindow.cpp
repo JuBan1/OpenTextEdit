@@ -68,7 +68,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 	QTimer* t = new QTimer();
-	t->setInterval(1000);
+	t->setInterval(2000);
 	t->setSingleShot(false);
 
 
@@ -81,9 +81,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	//ui->plainTextEdit->setTextCursor( ui->plainTextEdit->cursorForPosition(QPoint(0,0)) );
 
 
-	ui->plainTextEdit->startFind("bool", 1000, 2500);
+	ui->plainTextEdit->startFind("bool", 1000, 17500);
 	connect(t, &QTimer::timeout, [this](){
-		ui->plainTextEdit->findNext();
+		ui->plainTextEdit->ReplaceAndNext("BLAH");
 	});
 	//t->start();
 

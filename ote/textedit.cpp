@@ -226,6 +226,11 @@ void TextEdit::setSelection(const TextEdit::Selection& sel)
 	setTextCursor(cur);
 }
 
+void TextEdit::setTextInSelection(const QString& text)
+{
+	textCursor().insertText(text);
+}
+
 QPoint TextEdit::getScrollPosition() const
 {
 	return { horizontalScrollBar()->sliderPosition(), verticalScrollBar()->sliderPosition() };
@@ -286,6 +291,17 @@ void TextEdit::findNext()
 	}
 
 	return;
+}
+
+void TextEdit::ReplaceAndNext(const QString& replacement)
+{
+	auto cursor = textCursor();
+
+	if(cursor.selectedText() == m_findTerm) {
+		cursor.insertText(replacement);
+	}
+
+	findNext();
 }
 
 void TextEdit::setFindRange(int from, int to)
