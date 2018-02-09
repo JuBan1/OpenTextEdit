@@ -17,10 +17,7 @@ public:
 
 	void setup() override;
 	void highlightBlock(const QString& text) override;
-
-private:
-	QRegularExpression commentStartExpression;
-	QRegularExpression commentEndExpression;
+	void highlightSection(QStringRef text) override;
 };
 
 } // namespace ote

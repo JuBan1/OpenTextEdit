@@ -39,6 +39,18 @@ char opposingBracket(char c) {
 
 void BracketMatcherComponent::highlightBlock(const QString& text)
 {
+	TextBlockData *data = static_cast<TextBlockData*>(m_highlighter->currentBlockUserData());
+
+	if(!data)
+		data = new TextBlockData;
+	else
+		data->brackets.clear();
+
+	m_highlighter->setCurrentBlockUserData(data);
+}
+
+void BracketMatcherComponent::highlightSection(QStringRef text)
+{
 	TextBlockData *data = new TextBlockData;
 	const int textSize = text.size();
 
@@ -47,7 +59,7 @@ void BracketMatcherComponent::highlightBlock(const QString& text)
 		if(isLeftBracket(c) || isRightBracket(c)) {
 			BracketInfo* info = new BracketInfo;
 			info->character = c;
-			info->position = i;
+			info->position = text.position() + i;
 			data->brackets.push_back(info);
 		}
 	}
@@ -55,8 +67,7 @@ void BracketMatcherComponent::highlightBlock(const QString& text)
 	m_highlighter->setCurrentBlockUserData(data);
 }
 
-int BracketMatcherComponent::findLeftBracket(char orig, char other,
-											 QTextBlock currentBlock, int pos, int depth) const
+int findLeftBracket(char orig, char other, QTextBlock currentBlock, int pos, int depth)
 {
 	TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
 	QVector<BracketInfo*> infos = data->brackets;
@@ -84,8 +95,7 @@ int BracketMatcherComponent::findLeftBracket(char orig, char other,
 		return -1;
 }
 
-int BracketMatcherComponent::findRightBracket(char orig, char other,
-											  QTextBlock currentBlock, int pos, int depth) const
+int findRightBracket(char orig, char other, QTextBlock currentBlock, int pos, int depth)
 {
 	TextBlockData *data = static_cast<TextBlockData *>(currentBlock.userData());
 	QVector<BracketInfo*> infos = data->brackets;

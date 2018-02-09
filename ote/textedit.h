@@ -109,10 +109,12 @@ signals:
 	void contentsChanged();
 	void mouseWheelUsed(QWheelEvent *ev);
 	void gotFocus();
+	void urlsDropped(const QList<QUrl>& urls);
 
 protected:
 	void keyPressEvent(QKeyEvent *e) override;
 	void wheelEvent(QWheelEvent* event) override;
+	void dropEvent(QDropEvent *event) override;
 
 	void focusInEvent(QFocusEvent* event) override;
 	void paintEvent(QPaintEvent* e) override;
@@ -178,6 +180,11 @@ private:
 	SyntaxDefinition m_currentSyntaxDefinition;
 
 	void createParenthesisSelection(int pos);
+
+public:
+	bool isFoldable(const QTextBlock& block) const;
+	bool isFolded(const QTextBlock& block) const;
+	void toggleFold(const QTextBlock& startBlock);
 };
 
 } // namespace ote

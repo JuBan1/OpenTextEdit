@@ -49,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
 		ui->menuTheming->addAction(action);
 	}
 
+	ui->plainTextEdit->setAcceptDrops(true);
 
 	ui->plainTextEdit->setTheme(Theme("dracula"));
 	ui->plainTextEdit->setSyntaxDefnition(SyntaxDefinition("C++"));
@@ -63,6 +64,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
 			qDebug() << ui->plainTextEdit->getScrollPosition();
 	});
+
+	connect(ui->plainTextEdit, &ote::TextEdit::urlsDropped, [this](const QList<QUrl>& urls){
+		if(urls.isEmpty())
+			return;
+
+		QFile f(urls.first().toLocalFile());
+		f.open(QFile::ReadOnly);
+		auto txt = f.readAll();
+
+		ui->plainTextEdit->setPlainText(txt);
+	});
+
 
 	ui->statusBar->addWidget(l);
 

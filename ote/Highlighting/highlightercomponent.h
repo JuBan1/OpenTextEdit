@@ -15,6 +15,7 @@ public:
 
 	virtual void setup() = 0;
 	virtual void highlightBlock(const QString &text) = 0;
+	virtual void highlightSection(QStringRef ref) {}
 
 protected:
 

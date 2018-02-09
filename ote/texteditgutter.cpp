@@ -65,10 +65,10 @@ void TextEditGutter::paintEvent(QPaintEvent *event)
 void TextEditGutter::mouseReleaseEvent(QMouseEvent *event)
 {
 	if (event->x() >= width() - m_textEdit->fontMetrics().lineSpacing()) {
-		/*auto block = m_textEdit->blockAtPosition(event->y());
-		if (!block.isValid() || !m_codeEditor->isFoldable(block))
+		auto block = m_textEdit->blockAtPosition(event->y());
+		if (!block.isValid() || !m_textEdit->isFoldable(block))
 			return;
-		m_codeEditor->toggleFold(block);*/
+		m_textEdit->toggleFold(block);
 	}
 	QWidget::mouseReleaseEvent(event);
 }

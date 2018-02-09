@@ -27,11 +27,9 @@ public:
 
 	void setup() override;
 	void highlightBlock(const QString& text) override;
+	void highlightSection(QStringRef text) override;
 
 	QPair<int, int> findMatchingBracketPosition(QTextCursor cursor) const;
-private:
-	int findRightBracket(char orig, char other, QTextBlock currentBlock, int pos, int depth) const;
-	int findLeftBracket(char orig, char other, QTextBlock currentBlock, int pos, int depth) const;
 };
 
 } // namespace ote

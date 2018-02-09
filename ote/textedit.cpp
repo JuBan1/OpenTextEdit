@@ -8,6 +8,7 @@
 #include <QPalette>
 #include <QScrollBar>
 #include <QMenu>
+#include <QMimeData>
 
 #include <algorithm>
 #include <cmath>
@@ -702,6 +703,12 @@ void TextEdit::wheelEvent(QWheelEvent* event)
 	QPlainTextEdit::wheelEvent(event);
 }
 
+void TextEdit::dropEvent(QDropEvent* event)
+{
+	if(event->mimeData() && event->mimeData()->hasUrls())
+		emit urlsDropped(event->mimeData()->urls());
+}
+
 void TextEdit::focusInEvent(QFocusEvent* event)
 {
 	emit gotFocus();
@@ -1158,6 +1165,52 @@ QTextBlock TextEdit::findClosingBlock(const QTextBlock& startBlock) const {
 	}
 
 	return QTextBlock();
+}
+
+bool TextEdit::isFoldable(const QTextBlock &block) const
+{
+	return true; //m_highlighter->startsFoldingRegion(block);
+}
+
+bool TextEdit::isFolded(const QTextBlock &block) const
+{
+	if (!block.isValid())
+		return false;
+	const auto nextBlock = block.next();
+	if (!nextBlock.isValid())
+		return false;
+	return !nextBlock.isVisible();
+}
+
+void TextEdit::toggleFold(const QTextBlock &startBlock)
+{
+	// we also want to fold the last line of the region, therefore the ".next()"
+	const auto endBlock = findClosingBlock(startBlock).next();
+
+	if (isFolded(startBlock)) {
+		// unfold
+		auto block = startBlock.next();
+		while (block.isValid() && !block.isVisible()) {
+			block.setVisible(true);
+			block.setLineCount(block.layout()->lineCount());
+			block = block.next();
+		}
+
+	} else {
+		// fold
+		auto block = startBlock.next();
+		while (block.isValid() && block != endBlock) {
+			block.setVisible(false);
+			block.setLineCount(0);
+			block = block.next();
+		}
+	}
+
+	// redraw document
+	document()->markContentsDirty(startBlock.position(), endBlock.position() - startBlock.position() + 1);
+
+	// update scrollbars
+	emit document()->documentLayout()->documentSizeChanged(document()->documentLayout()->documentSize());
 }
 
 } // namespace ote
