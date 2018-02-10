@@ -407,26 +407,32 @@ void TextEdit::setModified(bool modified)
 
 void TextEdit::moveSelectedBlocksUp()
 {
-	auto c = textCursor();
+	auto blockCursor = textCursor();
 
 	bool success;
-	c.setPosition(c.selectionStart()); //Remove selection
-	success =  c.movePosition(QTextCursor::PreviousBlock);
-	success &= c.movePosition(QTextCursor::NextBlock, QTextCursor::KeepAnchor);
+	blockCursor.setPosition(blockCursor.selectionStart()); //Remove selection
+	success =  blockCursor.movePosition(QTextCursor::PreviousBlock);
+	success &= blockCursor.movePosition(QTextCursor::NextBlock, QTextCursor::KeepAnchor);
 
 	if(!success)
 		return;
 
-	c.beginEditBlock();
-	auto text = c.selectedText();
-	c.removeSelectedText();
+	auto insertCursor = textCursor();
+	insertCursor.setPosition(insertCursor.selectionEnd());
+	success = insertCursor.movePosition(QTextCursor::NextBlock);
 
-	c = textCursor();
-	c.setPosition(c.selectionEnd());
-	c.movePosition(QTextCursor::NextBlock);
-	c.insertText(text);
+	if(!success) {
+		insertCursor.movePosition(QTextCursor::EndOfBlock);
+		insertCursor.insertBlock();
+	}
 
-	c.endEditBlock();
+	blockCursor.beginEditBlock();
+	auto text = blockCursor.selectedText();
+	blockCursor.removeSelectedText();
+
+	insertCursor.insertText(text);
+
+	blockCursor.endEditBlock();
 }
 
 void TextEdit::moveSelectedBlocksDown()

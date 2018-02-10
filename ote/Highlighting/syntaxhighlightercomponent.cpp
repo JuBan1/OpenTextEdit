@@ -29,9 +29,9 @@ void SyntaxHighlighterComponent::highlightSection(QStringRef text)
 	const auto& t = m_highlighter->getTheme();
 	const auto& d = m_highlighter->getSyntaxDefinition();
 
-	static int counter = 0;
+	/*static int counter = 0;
 	counter += text.length();
-	qDebug() << counter;
+	qDebug() << counter;*/
 
 	// highlight keywords
 	QRegularExpressionMatchIterator matchIterator = QRegularExpression("\\b\\w+\\b").globalMatch(text);
