@@ -87,6 +87,15 @@ void TextEdit::setSyntaxDefnition(SyntaxDefinition d)
 	m_highlighter->rehighlight();
 }
 
+void TextEdit::setEndOfLineMarkersVisible(bool enable)
+{
+	if(enable == m_showEndOfLineMarkers)
+		return;
+
+	m_showEndOfLineMarkers = enable;
+	update();
+}
+
 void TextEdit::setWhitespaceVisible(bool show)
 {
 	auto opts = document()->defaultTextOption();
@@ -723,13 +732,40 @@ void TextEdit::contextMenuEvent(QContextMenuEvent *event)
 	delete menu;*/
 }
 
+void TextEdit::paintEndOfLineMarkers(QPainter &painter, const BlockList& blockList) const
+{
+	if(!m_showEndOfLineMarkers)
+		return;
+
+	const QChar visualArrow = ushort(0x21A4);
+
+	painter.save();
+	painter.setPen(m_currentTheme.getColor(Theme::TextEditText));
+
+	for (const auto& blockData : blockList) {
+		const auto block = blockData.block;
+		const auto geom = blockData.translatedRect;
+
+		const QTextLayout* layout = block.layout();
+		const int lineCount = layout->lineCount();
+		const QTextLine line = layout->lineAt(lineCount-1);
+		const QRectF lineRect = line.naturalTextRect().
+								translated(contentOffset().x(), geom.top());
+
+		painter.drawText(QPointF(lineRect.right() + 2, lineRect.top() + line.ascent()),
+						 visualArrow);
+	}
+
+	painter.restore();
+}
+
 
 void TextEdit::paintLineBreaks(QPainter &painter, const BlockList& blockList) const
 {
 	if(!m_showLinebreaks)
 		return;
 
-	const QChar visualArrow = ushort(0x21b5);
+	const QChar visualArrow = ushort(0x21B5);
 	const auto arrowWidth = fontMetrics().width(visualArrow);
 
 	painter.save();
@@ -1084,6 +1120,7 @@ void TextEdit::paintEvent(QPaintEvent* e)
 
 	auto bl = getBlocksInRect(e->rect());
 	paintLineBreaks(painter, bl);
+	paintEndOfLineMarkers(painter, bl);
 }
 
 TextEdit::BlockList TextEdit::getBlocksInViewport() const

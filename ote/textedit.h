@@ -26,6 +26,7 @@ public:
 	void setSyntaxDefnition(SyntaxDefinition d);
 	SyntaxDefinition getSyntaxDefinition() const { return m_currentSyntaxDefinition; }
 
+	void setEndOfLineMarkersVisible(bool enable);
 	void setWhitespaceVisible(bool show);
 	void setShowLinebreaks(bool show);
 	void setSmartIndent(bool enable);
@@ -157,8 +158,10 @@ private:
 	QTextBlock findClosingBlock(const QTextBlock& startBlock) const;
 	void paintLineBreaks(QPainter& painter, const BlockList& blockList) const;
 	void paintSearchBlock(QPainter& painter, const QRect& eventRect, const QTextBlock& block);
+	void paintEndOfLineMarkers(QPainter& painter, const BlockList& blockList) const;
 	void compositeExtraSelections();
 
+	bool m_showEndOfLineMarkers = false;
 	bool m_showLinebreaks = false;
 	bool m_smartIndent = false;
 	bool m_tabToSpaces = false;

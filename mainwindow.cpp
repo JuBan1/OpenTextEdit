@@ -210,3 +210,8 @@ void MainWindow::on_actionReload_Syntax_Files_triggered()
 	ote::SyntaxDefinitionDatabase::loadFromDir("/home/s3rius/dev/qt/OpenTextEdit/syntax");
 	ui->plainTextEdit->setSyntaxDefnition(ui->plainTextEdit->getSyntaxDefinition());
 }
+
+void MainWindow::on_actionShow_End_of_Line_markers_toggled(bool arg1)
+{
+	ui->plainTextEdit->setEndOfLineMarkersVisible(arg1);
+}

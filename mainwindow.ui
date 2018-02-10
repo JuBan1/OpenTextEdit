@@ -42,6 +42,7 @@
     <addaction name="actionEnable_Smart_Indent"/>
     <addaction name="actionEnable_Line_Wrap"/>
     <addaction name="actionAuto_convert_tab_to_spaces"/>
+    <addaction name="actionShow_End_of_Line_markers"/>
    </widget>
    <widget class="QMenu" name="menuZoom">
     <property name="title">
@@ -217,7 +218,15 @@
   </action>
   <action name="actionReload_Syntax_Files">
    <property name="text">
-    <string>Reload Syntax Files</string>
+    <string>Reload Syntax &amp;Files</string>
+   </property>
+  </action>
+  <action name="actionShow_End_of_Line_markers">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show End of Line markers</string>
    </property>
   </action>
  </widget>

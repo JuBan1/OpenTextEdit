@@ -54,6 +54,8 @@ private slots:
 
 	void on_actionReload_Syntax_Files_triggered();
 
+	void on_actionShow_End_of_Line_markers_toggled(bool arg1);
+
 private:
 	Ui::MainWindow *ui;
 };
