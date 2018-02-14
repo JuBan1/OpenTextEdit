@@ -49,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
 		ui->menuTheming->addAction(action);
 	}
 
+	ui->plainTextEdit->setFont( QFont("Fira Code", -1, QFont::Normal) );
 	ui->plainTextEdit->setAcceptDrops(true);
 
 	ui->plainTextEdit->setTheme(Theme("dracula"));

@@ -407,12 +407,13 @@ void TextEdit::setModified(bool modified)
 
 void TextEdit::moveSelectedBlocksUp()
 {
-	auto blockCursor = textCursor();
-
 	bool success;
-	blockCursor.setPosition(blockCursor.selectionStart()); //Remove selection
-	success =  blockCursor.movePosition(QTextCursor::PreviousBlock);
-	success &= blockCursor.movePosition(QTextCursor::NextBlock, QTextCursor::KeepAnchor);
+
+	// Selects the line above the selected blocks.
+	auto lineCursor = textCursor();
+	lineCursor.setPosition(lineCursor.selectionStart()); //Remove selection
+	success =  lineCursor.movePosition(QTextCursor::PreviousBlock);
+	success &= lineCursor.movePosition(QTextCursor::NextBlock, QTextCursor::KeepAnchor);
 
 	if(!success)
 		return;
@@ -421,18 +422,20 @@ void TextEdit::moveSelectedBlocksUp()
 	insertCursor.setPosition(insertCursor.selectionEnd());
 	success = insertCursor.movePosition(QTextCursor::NextBlock);
 
+	// If the cursor is at the last block the above move action can fail. In that case a new
+	// block needs to be added or the insert operation screws up.
 	if(!success) {
 		insertCursor.movePosition(QTextCursor::EndOfBlock);
 		insertCursor.insertBlock();
 	}
 
-	blockCursor.beginEditBlock();
-	auto text = blockCursor.selectedText();
-	blockCursor.removeSelectedText();
+	lineCursor.beginEditBlock();
 
+	auto text = lineCursor.selectedText();
+	lineCursor.removeSelectedText();
 	insertCursor.insertText(text);
 
-	blockCursor.endEditBlock();
+	lineCursor.endEditBlock();
 }
 
 void TextEdit::moveSelectedBlocksDown()

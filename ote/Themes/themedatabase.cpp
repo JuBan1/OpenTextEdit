@@ -9,12 +9,39 @@ namespace ote {
 std::map<QString, std::unique_ptr<ThemeData>> ThemeDatabase::createThemeDB() {
 	std::map<QString, std::unique_ptr<ThemeData>> map;
 
-	std::unique_ptr<ThemeData> defaultTheme(new ThemeData(""));
+	auto darkTheme = std::unique_ptr<ThemeData>(new ThemeData(""));
 
-	for(int i=0; i<Theme::MAX_ITEMS; ++i)
-		defaultTheme->set(static_cast<Theme::HighlightElements>(i), Qt::black);
+	darkTheme->set(Theme::TextEditText, "#eff0f1");
+	darkTheme->set(Theme::TextEditActiveText, QColor(45,92,118));
+	darkTheme->set(Theme::TextEditBackground, QColor(35,38,41));
+	darkTheme->set(Theme::TextEditActiveBackground, QColor(49,54,59,64));
 
-	map[defaultTheme->getName()] = std::move(defaultTheme);
+	darkTheme->set(Theme::GutterText, QColor(122,124,125));
+	darkTheme->set(Theme::GutterActiveText, QColor(165,166,168));
+	darkTheme->set(Theme::GutterBackground, "#31363b");
+	darkTheme->set(Theme::GutterActiveBackground, QColor(49,54,59));
+
+	darkTheme->set(Theme::SyntaxComment, "#606060");
+	darkTheme->set(Theme::SyntaxString, "#f44f4f");
+	darkTheme->set(Theme::SyntaxNumber, "#f67400");
+	darkTheme->set(Theme::SyntaxConstant, "#27aeae");
+	darkTheme->set(Theme::SyntaxType, "#fdbc4b");
+	darkTheme->set(Theme::SyntaxKeyword, "#fdbc4b");
+
+	QTextCharFormat f2;
+	f2.setBackground(QColor("#19ffffff"));
+	f2.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+	darkTheme->set(Theme::SyntaxMatchingBracket, QColor(142,68,173));
+	darkTheme->set(Theme::SyntaxMatchingBracket, f2);
+
+	darkTheme->set(Theme::SyntaxOperator, "#cfcfc2");
+	darkTheme->set(Theme::SyntaxSymbol, "#cfcfc2");
+	darkTheme->set(Theme::SyntaxVariable, "#eff0f1");
+
+	darkTheme->set(Theme::SearchHighlight, QColor(45,92,118,255));
+
+
+	addTheme(std::move(darkTheme));
 
 	return map;
 }
