@@ -1,11 +1,11 @@
- {
-	"name": "JSON",
-	"fileExtensions": ["json"],
+  {
+	"name": "Property File",
+	"fileExtensions": ["desktop", "ini", "config", "cfg"],
 	 
 	"regexRules": [
 		{
-			"regex": "\\{|\\}|\\[|\\]|,|\\+|\\-|\\.|\\:",
-			"type": "SyntaxSymbol"
+			"regex": "^\\[.*\\]",
+			"type": "SyntaxType"
 		},
 		{
 			"regex": "\\W(\\d+\\w*)",
@@ -21,9 +21,13 @@
 			"type": "SyntaxString"
 		},
 		{
-			"regex": "(\"\\w*\")\\s*\\:",
+			"regex": "^\\s*(\\w+)\\s*\\=",
 			"captureGroup": 1,
 			"type": "SyntaxType"
+		},
+		{
+			"regex": "^\\s*;.*$",
+			"type": "SyntaxComment"
 		}
 	]
 

@@ -9,29 +9,29 @@ namespace ote {
 
 class TextEditGutter : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit TextEditGutter(TextEdit *editor);
-	QSize sizeHint() const override;
+    explicit TextEditGutter(TextEdit *editor);
+    QSize sizeHint() const override;
 
 protected:
-	void paintEvent(QPaintEvent *event) override;
-	void mouseReleaseEvent(QMouseEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 
 private:
-	friend class TextEdit;
+    friend class TextEdit;
 
-	void paintFoldingMarks(QPainter& painter, const TextEdit::BlockList& blockList);
-	void paintGutter(QPaintEvent* event, QPainter& painter, const TextEdit::BlockList& blockList);
-	void paintFoldingRange(QPainter& painter, const TextEdit::BlockData& blockData);
+    void paintFoldingMarks(QPainter& painter, const TextEdit::BlockList& blockList);
+    void paintGutter(QPaintEvent* event, QPainter& painter, const TextEdit::BlockList& blockList);
+    void paintFoldingRange(QPainter& painter, const TextEdit::BlockData& blockData);
 
-	void leaveEvent(QEvent* e) override;
-	void mouseMoveEvent(QMouseEvent* event) override;
+    void leaveEvent(QEvent* e) override;
+    void mouseMoveEvent(QMouseEvent* event) override;
 
-	TextEdit* m_textEdit;
+    TextEdit* m_textEdit;
 
-	int m_hoverBlockNumber = -1;
+    int m_hoverBlockNumber = -1;
 };
 
 } // namespace ote

@@ -15,56 +15,56 @@ class Theme
 {
 public:
 
-	// If you add/remove any items here be sure to also change the impl of elementToString(...) and
-	// stringToElement(...)
-	enum HighlightElements
-	{
-		TextEditText,
-		TextEditActiveText,
-		TextEditBackground,
-		TextEditActiveBackground,
+    // If you add/remove any items here be sure to also change the impl of elementToString(...) and
+    // stringToElement(...)
+    enum HighlightElements
+    {
+        TextEditText,
+        TextEditActiveText,
+        TextEditBackground,
+        TextEditActiveBackground,
 
-		GutterText,
-		GutterActiveText,
-		GutterBackground,
-		GutterActiveBackground,
+        GutterText,
+        GutterActiveText,
+        GutterBackground,
+        GutterActiveBackground,
 
-		SyntaxComment,
-		SyntaxString,
-		SyntaxNumber,
-		SyntaxConstant,
-		SyntaxType,
-		SyntaxKeyword,
-		SyntaxMatchingBracket,
-		SyntaxOperator,
-		SyntaxSymbol,
-		SyntaxVariable,
+        SyntaxComment,
+        SyntaxString,
+        SyntaxNumber,
+        SyntaxConstant,
+        SyntaxType,
+        SyntaxKeyword,
+        SyntaxMatchingBracket,
+        SyntaxOperator,
+        SyntaxSymbol,
+        SyntaxVariable,
 
-		SearchHighlight,
+        SearchHighlight,
 
-		MAX_ITEMS
-	};
+        MAX_ITEMS
+    };
 
-	static const char* elementToString(HighlightElements elem);
+    static const char* elementToString(HighlightElements elem);
 
-	static HighlightElements stringToElement(const char* elem);
-	static HighlightElements stringToElement(const QString& elem);
+    static HighlightElements stringToElement(const char* elem);
+    static HighlightElements stringToElement(const QString& elem);
 
-	Theme();
-	Theme(QString name);
+    Theme();
+    Theme(QString name);
 
-	QString getName() const;
-	bool isDefault() const;
+    QString getName() const;
+    bool isDefault() const;
 
-	QTextCharFormat getFormat(HighlightElements c) const;
-	QColor getColor(HighlightElements tc) const;
+    QTextCharFormat getFormat(HighlightElements c) const;
+    QColor getColor(HighlightElements tc) const;
 
 private:
-	friend class ThemeData;
-	friend class ThemeDatabase;
+    friend class ThemeData;
+    friend class ThemeDatabase;
 
-	Theme(ThemeData* data);
-	ThemeData* m_data;
+    Theme(ThemeData* data);
+    ThemeData* m_data;
 };
 
 } // namespace ote

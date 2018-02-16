@@ -13,45 +13,45 @@ class SyntaxDefinitionData;
 class SyntaxDefinition
 {
 public:
-	SyntaxDefinition();
-	SyntaxDefinition(QString name);
+    SyntaxDefinition();
+    SyntaxDefinition(QString name);
 
-	struct OperatorHighlightGroup {
-		QString operators;
-		Theme::HighlightElements type;
-	};
+    struct OperatorHighlightGroup {
+        QString operators;
+        Theme::HighlightElements type;
+    };
 
-	struct WordHighlightGroup {
-		QStringList words;
-		Theme::HighlightElements type;
-	};
+    struct WordHighlightGroup {
+        QStringList words;
+        Theme::HighlightElements type;
+    };
 
-	struct RegexHighlightGroup {
-		QRegularExpression pattern;
-		int captureGroup = 0;
-		Theme::HighlightElements type;
-	};
+    struct RegexHighlightGroup {
+        QRegularExpression pattern;
+        int captureGroup = 0;
+        Theme::HighlightElements type;
+    };
 
-	const QString& getName() const;
-	bool isDefault() const;
+    const QString& getName() const;
+    bool isDefault() const;
 
-	const QVector<OperatorHighlightGroup>& getOperatorGroups() const;
-	const QVector<WordHighlightGroup>& getKeywordGroups() const;
-	const QVector<RegexHighlightGroup>& getRegexGroups() const;
+    const QVector<OperatorHighlightGroup>& getOperatorGroups() const;
+    const QVector<WordHighlightGroup>& getKeywordGroups() const;
+    const QVector<RegexHighlightGroup>& getRegexGroups() const;
 
-	Theme::HighlightElements getKeywordDefault() const;
+    Theme::HighlightElements getKeywordDefault() const;
 
-	const QString& getSingleLineComment() const;
-	const QString& getMultiLineCommentStart() const;
-	const QString& getMultiLineCommentEnd() const;
+    const QString& getSingleLineComment() const;
+    const QString& getMultiLineCommentStart() const;
+    const QString& getMultiLineCommentEnd() const;
 
 private:
-	friend class SyntaxDefinitionData;
-	friend class SyntaxDefinitionDatabase;
+    friend class SyntaxDefinitionData;
+    friend class SyntaxDefinitionDatabase;
 
-	SyntaxDefinition(SyntaxDefinitionData* data);
+    SyntaxDefinition(SyntaxDefinitionData* data);
 
-	SyntaxDefinitionData* m_data;
+    SyntaxDefinitionData* m_data;
 };
 
 } // namespace ote

@@ -10,16 +10,16 @@ class CompositeHighlighter;
 class HighlighterComponent
 {
 public:
-	HighlighterComponent(CompositeHighlighter* h);
-	virtual ~HighlighterComponent();
+    HighlighterComponent(CompositeHighlighter* h);
+    virtual ~HighlighterComponent();
 
-	virtual void setup() = 0;
-	virtual void highlightBlock(const QString &text) = 0;
-	virtual void highlightSection(QStringRef ref) {}
+    virtual void setup() = 0;
+    virtual void highlightBlock(const QString &text) = 0;
+    virtual void highlightSection(QStringRef ref) {}
 
 protected:
 
-	CompositeHighlighter* m_highlighter;
+    CompositeHighlighter* m_highlighter;
 };
 
 } // namespace ote

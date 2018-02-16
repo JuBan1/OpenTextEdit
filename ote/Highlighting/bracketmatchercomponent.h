@@ -10,26 +10,26 @@ namespace ote {
 
 struct BracketInfo
 {
-	char character;
-	int position;
+    char character;
+    int position;
 };
 
 class TextBlockData : public QTextBlockUserData
 {
 public:
-	QVector<BracketInfo*> brackets;
+    QVector<BracketInfo*> brackets;
 };
 
 class BracketMatcherComponent : public HighlighterComponent
 {
 public:
-	BracketMatcherComponent(CompositeHighlighter* h);
+    BracketMatcherComponent(CompositeHighlighter* h);
 
-	void setup() override;
-	void highlightBlock(const QString& text) override;
-	void highlightSection(QStringRef text) override;
+    void setup() override;
+    void highlightBlock(const QString& text) override;
+    void highlightSection(QStringRef text) override;
 
-	QPair<int, int> findMatchingBracketPosition(QTextCursor cursor) const;
+    QPair<int, int> findMatchingBracketPosition(QTextCursor cursor) const;
 };
 
 } // namespace ote

@@ -14,27 +14,27 @@ class ThemeData
 public:
 
 
-	QString getName() const { return m_name; }
+    QString getName() const { return m_name; }
 
-	QColor getColor(Theme::HighlightElements colorEnum) const;
-	QTextCharFormat getFormat(Theme::HighlightElements colorEnum) const;
+    QColor getColor(Theme::HighlightElements colorEnum) const;
+    QTextCharFormat getFormat(Theme::HighlightElements colorEnum) const;
 
-	ThemeData& set(Theme::HighlightElements elem, const QColor& color);
-	ThemeData& set(Theme::HighlightElements elem, const QTextCharFormat& format);
+    ThemeData& set(Theme::HighlightElements elem, const QColor& color);
+    ThemeData& set(Theme::HighlightElements elem, const QTextCharFormat& format);
 
 private:
-	friend class ThemeDatabase;
+    friend class ThemeDatabase;
 
-	ThemeData();
-	ThemeData(QString name);
-	ThemeData(const ThemeData&) = default;
-	ThemeData& operator=(const ThemeData&) = default;
+    ThemeData();
+    ThemeData(QString name);
+    ThemeData(const ThemeData&) = default;
+    ThemeData& operator=(const ThemeData&) = default;
 
-	void override(const ThemeData* other);
-	bool loadFromFile(QString filePath);
+    void override(const ThemeData* other);
+    bool loadFromFile(QString filePath);
 
-	QString m_name;
-	std::array<QTextCharFormat,Theme::MAX_ITEMS> m_formats;
+    QString m_name;
+    std::array<QTextCharFormat,Theme::MAX_ITEMS> m_formats;
 };
 
 } // namespace ote

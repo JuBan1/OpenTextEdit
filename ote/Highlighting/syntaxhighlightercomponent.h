@@ -13,11 +13,11 @@ namespace ote {
 class SyntaxHighlighterComponent : public HighlighterComponent
 {
 public:
-	SyntaxHighlighterComponent(CompositeHighlighter* h);
+    SyntaxHighlighterComponent(CompositeHighlighter* h);
 
-	void setup() override;
-	void highlightBlock(const QString& text) override;
-	void highlightSection(QStringRef text) override;
+    void setup() override;
+    void highlightBlock(const QString& text) override;
+    void highlightSection(QStringRef text) override;
 };
 
 } // namespace ote

@@ -14,23 +14,23 @@ class SyntaxDefinitionData;
 class SyntaxDefinitionDatabase
 {
 public:
-	static bool hasDefinition(QString name);
-	static SyntaxDefinition getDefinition(QString name);
-	static void addDefinition(std::unique_ptr<SyntaxDefinitionData> data);
+    static bool hasDefinition(QString name);
+    static SyntaxDefinition getDefinition(QString name);
+    static void addDefinition(std::unique_ptr<SyntaxDefinitionData> data);
 
-	static void loadFromFile(QString filePath);
-	static void loadFromDir(QString dirPath);
+    static void loadFromFile(QString filePath);
+    static void loadFromDir(QString dirPath);
 
-	static std::vector<SyntaxDefinition> getAllDefinitions();
-	
-	static SyntaxDefinition findDefinitionForFileExtension(QString ext);
+    static std::vector<SyntaxDefinition> getAllDefinitions();
+
+    static SyntaxDefinition findDefinitionForFileExtension(QString ext);
 
 private:
-	SyntaxDefinitionDatabase() = delete;
+    SyntaxDefinitionDatabase() = delete;
 
-	static std::map<QString, std::unique_ptr<SyntaxDefinitionData>> createDefinitionDB();
+    static std::map<QString, std::unique_ptr<SyntaxDefinitionData>> createDefinitionDB();
 
-	static std::map<QString, std::unique_ptr<SyntaxDefinitionData>> s_definitions;
+    static std::map<QString, std::unique_ptr<SyntaxDefinitionData>> s_definitions;
 };
 
 } // namespace ote
