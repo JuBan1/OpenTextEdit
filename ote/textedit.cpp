@@ -930,7 +930,7 @@ void TextEdit::paintSearchBlock(QPainter& painter, const QRect& eventRect, const
             blockFS = blockFS.next();
             if (!blockFS.isVisible()) {
                 // invisible blocks do have zero line count
-                blockFS = document()->findBlockByLineNumber(blockFS.firstLineNumber());
+                blockFS = document()->findBlockByLineNumber(blockFS.firstLineNumber()); //findBlockByNumber?
             }
 
         }
@@ -1166,7 +1166,7 @@ TextEdit::BlockList TextEdit::getBlocksInRect(QRect rect) const
 
 int TextEdit::cursorPosToAbsolutePos(const TextEdit::CursorPos& pos) const
 {
-    const auto& block = document()->findBlockByLineNumber(pos.line);
+    const auto& block = document()->findBlockByNumber(pos.line);
     const auto col = std::max(0, std::min(pos.column, block.length()-1));
     return block.position() + col;
 }

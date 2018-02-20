@@ -10,7 +10,7 @@ namespace ote {
 std::map<QString, std::unique_ptr<SyntaxDefinitionData>> SyntaxDefinitionDatabase::createDefinitionDB() {
     std::map<QString, std::unique_ptr<SyntaxDefinitionData>> map;
 
-    std::unique_ptr<SyntaxDefinitionData> defaultDefinition(new SyntaxDefinitionData(""));
+    std::unique_ptr<SyntaxDefinitionData> defaultDefinition(new SyntaxDefinitionData(s_defaultDefinitionName));
 
     //for(int i=0; i<Definition::MAX_ITEMS; ++i)
     //	defaultDefinition->set(static_cast<SyntaxDefinition::HighlightElements>(i), Qt::black);
@@ -20,7 +20,11 @@ std::map<QString, std::unique_ptr<SyntaxDefinitionData>> SyntaxDefinitionDatabas
     return map;
 }
 
-std::map<QString, std::unique_ptr<SyntaxDefinitionData>> SyntaxDefinitionDatabase::s_definitions = createDefinitionDB();
+QString SyntaxDefinitionDatabase::s_defaultDefinitionName = "";
+
+std::map<QString, std::unique_ptr<SyntaxDefinitionData>> SyntaxDefinitionDatabase::s_definitions =
+        createDefinitionDB();
+
 
 bool SyntaxDefinitionDatabase::hasDefinition(QString name)
 {
@@ -33,7 +37,7 @@ SyntaxDefinition SyntaxDefinitionDatabase::getDefinition(QString name)
     if (it != s_definitions.end())
         return SyntaxDefinition(it->second.get());
 
-    return SyntaxDefinition(s_definitions.at("").get());
+    return getDefaultDefinition();
 }
 
 void SyntaxDefinitionDatabase::addDefinition(std::unique_ptr<SyntaxDefinitionData> data)
@@ -75,10 +79,32 @@ std::vector<SyntaxDefinition> SyntaxDefinitionDatabase::getAllDefinitions()
     return definitions;
 }
 
+SyntaxDefinition SyntaxDefinitionDatabase::getDefaultDefinition()
+{
+    return getDefinition(getDefaultDefinitionName());
+}
+
+QString SyntaxDefinitionDatabase::getDefaultDefinitionName()
+{
+    return s_defaultDefinitionName;
+}
+
+void SyntaxDefinitionDatabase::setDefaultDefinitionName(const QString& newName)
+{
+    auto it = s_definitions.find(s_defaultDefinitionName);
+    auto data = std::move(it->second);
+    s_definitions.erase(it);
+
+    std::unique_ptr<SyntaxDefinitionData> newDef(new SyntaxDefinitionData(newName));
+    newDef->override(data.get());
+    s_definitions[newName] = std::move(newDef);
+    s_defaultDefinitionName = newName;
+}
+
 SyntaxDefinition SyntaxDefinitionDatabase::findDefinitionForFileExtension(QString ext)
 {
     if(ext.isEmpty())
-        return SyntaxDefinition("");
+        return getDefaultDefinition();
 
     ext = ext.mid( ext.lastIndexOf('.'), -1 );
     if(ext.startsWith('.'))
@@ -89,7 +115,7 @@ SyntaxDefinition SyntaxDefinitionDatabase::findDefinitionForFileExtension(QStrin
             return SyntaxDefinition(sd.second.get());
     }
 
-    return SyntaxDefinition("");
+    return getDefaultDefinition();
 }
 
 } // namespace ote

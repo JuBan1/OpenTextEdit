@@ -23,6 +23,10 @@ public:
 
     static std::vector<SyntaxDefinition> getAllDefinitions();
 
+    static SyntaxDefinition getDefaultDefinition();
+    static QString getDefaultDefinitionName();
+    static void setDefaultDefinitionName(const QString& newName);
+
     static SyntaxDefinition findDefinitionForFileExtension(QString ext);
 
 private:
@@ -30,6 +34,7 @@ private:
 
     static std::map<QString, std::unique_ptr<SyntaxDefinitionData>> createDefinitionDB();
 
+    static QString s_defaultDefinitionName;
     static std::map<QString, std::unique_ptr<SyntaxDefinitionData>> s_definitions;
 };
 
